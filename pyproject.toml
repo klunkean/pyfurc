@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "pyfurc"
+version = "0.1.0"
+description = "AUTO-07p made accessible through python / sympy."
+authors = ["klunkean"]
+license = "WTFPLv2"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+numpy= "*"
+sympy= "*"
+pandas= "*"
+
+[tool.poetry.dev-dependencies]
+pylint = "*"
+ipykernel = "*"
+jupyter = "*"
+notebook = "*"
+black = {version = "*", allow-prereleases = true, python = "^3.8"}
+
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

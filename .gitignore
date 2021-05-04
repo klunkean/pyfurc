@@ -1,0 +1,25 @@
+/.vscode/
+*.code-workspace
+# Local History for Visual Studio Code
+.history/
+
+*.goutputstream*
+
+#pipenv
+Pipfile*
+
+*.lock
+__pycache__
+
+testing.py
+debug.py
+testing.ipynb
+*.ipynb_checkpoints
+*.bib
+*.docx
+*.log
+
+.python-version
+
+*trsh*
+.env*

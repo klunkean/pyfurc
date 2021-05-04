@@ -1,0 +1,398 @@
+from sympy import Symbol, Rational, nfloat
+from sympy import Expr as spexpr
+from sympy import sin as sp_sin
+from sympy import pi as sp_pi
+from os import path, environ
+from subprocess import Popen, PIPE
+from pyfurc.util import AutoCodePrinter, DataDir, ParamDict, AutoOutputReader
+from warnings import warn
+
+
+class PhysicalQuantity(Symbol):
+    def __init__(self, name, quantity_type="parameter", value=0.0):
+        super().__init__()
+        possible_quantity_types = ["load", "dof", "parameter"]
+        if quantity_type.lower() not in possible_quantity_types:
+            raise ValueError("quantity_type has to be one of: " + ", ".join(possible_quantity_types))
+        self._name = None
+        self.quantity_type = quantity_type.lower()
+        self.value = value
+
+class Energy(spexpr):
+    def __init__(self, expr):
+        self.expr = expr
+        self.dofs = {}
+        self.params = {}
+        self.ndofs = 0
+        self.nparams = 0
+        load_defined = 0
+        for atom in expr.atoms():
+            if type(atom) is PhysicalQuantity:
+                if atom.quantity_type == "dof":
+                    self.ndofs += 1
+                    name = "U({:d})".format(self.ndofs)
+                    atom._name = name
+                    self.dofs.update({atom: {"name": name, "value": atom.value}})
+
+                elif atom.quantity_type == "parameter":
+                    self.nparams += 1
+                    name = "PAR({:d})".format(self.nparams + 1)
+                    atom._name = name
+                    self.params.update({atom: {"name": name, "value": atom.value}})
+                elif atom.quantity_type == "load":
+                    name = "PAR(1)"
+                    atom._name = name
+                    self.load = {atom: {"name": name, "value": atom.value}}
+                    load_defined += 1
+        if load_defined != 1:
+            raise NotImplementedError(
+                "You have to define exactly one load. Other cases are not implemented."
+            )
+
+    # TODO fix repr and str for pretty printing and print dofs, load and parameters
+    def __repr__(self):
+        return repr(self.expr)
+
+    # TODO fix repr and str for pretty printing and print dofs, load and parameters
+    def __str__(self):
+        return str(self.expr)
+
+    def info(self):
+        infostr = "Potential energy with {:d} DOF(s):\n".format(self.ndofs)
+        infostr += str(self.expr) + "\n\n"
+        infostr += "The DOFs are:\n"
+        for dof, dofdict in self.dofs.items():
+            infostr += (
+                "\t"
+                + dof.name
+                + " - "
+                + "Fortran Name: {:s}".format(dofdict["name"])
+                + " - "
+                + "Init. Value: {:f}".format(dofdict["value"])
+                + "\n"
+            )
+        infostr += "The parameters are:\n"
+        for prm, prmdict in self.params.items():
+            infostr += (
+                "\t"
+                + prm.name
+                + " - "
+                + "Fortran Name: {:s}".format(prmdict["name"])
+                + " - "
+                + "Value: {:f}".format(prmdict["value"])
+                + "\n"
+            )
+        infostr += "The load is:\n"
+        for load, loaddict in self.load.items():
+            infostr += (
+                "\t"
+                + load.name
+                + " - "
+                + "Fortran Name: {:s}".format(loaddict["name"])
+                + " - "
+                + "Init. Value: {:f}".format(loaddict["value"])
+                + "\n"
+            )
+        print(infostr)
+
+    def equilibrium(self):
+        eq_exprs = []
+        for dof, _ in self.dofs.items():
+            try:
+                eq = self.expr.diff(dof)
+                # eq = nfloat(eq)
+            except AttributeError:
+                "Expression seems not to be a valid sympy expression."
+            eq_exprs.append(eq)
+        return eq_exprs
+
+    def set_quantity_value(self, key, value):
+        found = False
+        for dicti in [self.params, self.dofs, self.load]:
+            if key in dicti:
+                dicti[key]["value"] = value
+                found = True
+        if not found:
+            raise KeyError("Variable {:s} not found".format(str(key)))
+
+
+class BifurcationProblem:
+    def __init__(self, energy, name="pyfurc_problem"):
+        self.energy = energy
+        self.dofs = energy.dofs
+        self._solved = False
+        self.problem_name = name
+        self.problem_parameters = ParamDict()
+        self.problem_parameters.update(
+            {
+                "NTST": 50,
+                "IAD": 3,
+                "EPSL": 1e-7,
+                "EPSU": 1e-7,
+                "EPSS": 1e-5,
+                "ITMX": 8,
+                "ITNW": 5,
+                "DS": 0.1,
+                "DSMIN": 1e-3,
+                "DSMAX": 0.2,
+                "IADS": 1,
+                "STOP": "[]",
+                "NMX": 200,
+                "RL0": 0.0,
+                "RL1": 0.0,
+                "MXBF": 10,
+                "NPR": 200,
+                "IID": 2,
+                "IPLT": 0,
+                "UZR": "{}",
+                "UZSTOP": "{}",
+            }
+        )
+
+        self._other_parameters = ParamDict()
+        self._other_parameters.update(
+            {
+                "NDIM": self.energy.ndofs,
+                "NPAR": self.energy.nparams + 1,
+                "NBC": 0,
+                "NINT": 0,
+                "JAC": 0,
+                "ICP": [1],
+                "ILP": 0,
+                "ISP": 1,
+                "IRS": 0,
+                "IPS": 0,
+            }
+        )
+
+        self._f_printer = AutoCodePrinter()
+
+    def set_parameter(self, param, value):
+        other = False
+        if param in self._other_parameters.keys():
+            warn(
+                "Changing this parameter is not recommended. Results may be unpredictable."
+            )
+            other = True
+        try:
+            dict_to_change = (
+                self.problem_parameters if not other else self._other_parameters
+            )
+            default_type = type(dict_to_change[param])
+            if not (type(value) == default_type):
+                if default_type == float and type(value) == int:
+                    value = float(value)
+                else:
+                    raise TypeError(
+                        "Parameter " + param + " must be of type " + default_type
+                    )
+            dict_to_change[param] = value
+
+        except KeyError:
+            raise KeyError("Unknown key " + param)
+
+    def set_quantity_value(self, param, value):
+        self.energy.set_quantity_value(param, value)
+
+    def print_parameters(self):
+        print(self.problem_parameters)
+        # print(self._other_parameters)
+
+    def _fortran_equilibriums(self):
+        equis = self.energy.equilibrium()
+        fort_eqs = []
+        for i, eq in enumerate(equis):
+            fort_eq = "F({:d})=".format(i + 1) + self._f_printer.doprint(eq).lstrip()
+            fort_eqs.append(fort_eq)
+        return fort_eqs
+
+
+class BifurcationProblemSolver:
+    def __init__(self, bf_problem):
+        self.problem = bf_problem
+        self._f_printer = AutoCodePrinter()
+        self._f_ind = "  "
+        self._auto_setup()
+
+    def _auto_setup(self):
+        proc = Popen(["locate", "auto.env.sh"], stdout=PIPE, stderr=PIPE)
+        auto_dir_files = proc.communicate()[0].decode().rstrip().split("\n")
+        auto_dir_file = auto_dir_files[0]
+        with open(auto_dir_file, "r") as f:
+            for line in f.readlines():
+                if line.startswith("AUTO_DIR"):
+                    auto_path = line.split("=")[-1].rstrip()
+
+        proc = Popen(["echo $HOME"], stdout=PIPE, stderr=PIPE, shell=True)
+        home_dir = proc.communicate()[0].decode().rstrip()
+        self.auto_dir = auto_path.replace("$HOME", home_dir)
+        self._env = environ.copy()
+        self._env["AUTO_DIR"] = self.auto_dir
+        with open(path.join(self.auto_dir, "cmds", "auto.env.sh"),"r") as envf:
+            for line in envf.readlines():
+                if line.startswith("PATH"):
+                    extend = line.split("=")[-1].rstrip()
+                    extend = extend.replace("$AUTO_DIR", self.auto_dir)
+                    newpath = self._env["PATH"]+f":{extend}"
+                    self._env["PATH"] = newpath
+
+    def _f_func(self):
+        eq_exprs = self.problem._fortran_equilibriums()
+
+        code = "SUBROUTINE FUNC(NDIM,U,ICP,PAR,IJAC,F,DFDU,DFDP)\n\n"
+        code += self._f_ind + "IMPLICIT NONE\n"
+        code += self._f_ind + "INTEGER, INTENT(IN) :: NDIM, IJAC, ICP(*)\n"
+        code += self._f_ind + "DOUBLE PRECISION, INTENT(IN) :: U(NDIM), PAR(*)\n"
+        code += self._f_ind + "DOUBLE PRECISION, INTENT(OUT) :: F(NDIM)\n"
+        code += (
+            self._f_ind
+            + "DOUBLE PRECISION, INTENT(INOUT) :: DFDU(NDIM,NDIM),DFDP(NDIM,*)\n\n"
+        )
+        # body
+        for expr in eq_exprs:
+            code += self._f_ind + expr + "\n"
+        # end body
+        code += "\nEND SUBROUTINE FUNC"
+        return code
+
+    def _f_stpnt(self):
+        code = "SUBROUTINE STPNT(NDIM,U,PAR,T)\n\n"
+        code += self._f_ind + "IMPLICIT NONE\n"
+        code += self._f_ind + "INTEGER, INTENT(IN) :: NDIM\n"
+        code += self._f_ind + "DOUBLE PRECISION, INTENT(INOUT) :: U(NDIM),PAR(*)\n"
+        code += self._f_ind + "DOUBLE PRECISION, INTENT(IN) :: T\n\n"
+        # body
+        for load, load_info in self.problem.energy.load.items():
+            code += (
+                self._f_ind
+                + load_info["name"]
+                + " = "
+                + self._f_printer.doprint(load_info["value"]).lstrip()
+                + "\n"
+            )
+        for para, para_dict in self.problem.energy.params.items():
+            code += (
+                self._f_ind
+                + para_dict["name"]
+                + " = "
+                + self._f_printer.doprint(para_dict["value"]).lstrip()
+                + "\n"
+            )
+        # end body
+        code += "\nEND SUBROUTINE STPNT"
+        return code
+
+    def _f_bcnd(self):
+        code = "SUBROUTINE BCND(NDIM,PAR,ICP,NBC,U0,U1,FB,IJAC,DBC)\n\n"
+        code += self._f_ind + "IMPLICIT NONE\n"
+        code += self._f_ind + "INTEGER, INTENT(IN) :: NDIM, ICP(*), NBC, IJAC\n"
+        code += (
+            self._f_ind + "DOUBLE PRECISION, INTENT(IN) :: PAR(*), U0(NDIM), U1(NDIM)\n"
+        )
+        code += self._f_ind + "DOUBLE PRECISION, INTENT(OUT) :: FB(NBC)\n"
+        code += self._f_ind + "DOUBLE PRECISION, INTENT(INOUT) :: DBC(NBC,*)\n\n"
+        code += "END SUBROUTINE BCND"
+        return code
+
+    def _f_icnd(self):
+        code = "SUBROUTINE ICND(NDIM,PAR,ICP,NINT,U,UOLD,UDOT,UPOLD,FI,IJAC,DINT)\n\n"
+        code += self._f_ind + "IMPLICIT NONE\n"
+        code += self._f_ind + "INTEGER, INTENT(IN) :: NDIM, ICP(*), NINT, IJAC\n"
+        code += self._f_ind + "DOUBLE PRECISION, INTENT(IN) :: PAR(*)\n"
+        code += (
+            self._f_ind
+            + "DOUBLE PRECISION, INTENT(IN) :: U(NDIM), UOLD(NDIM), UDOT(NDIM), UPOLD(NDIM)\n"
+        )
+        code += self._f_ind + "DOUBLE PRECISION, INTENT(OUT) :: FI(NINT)\n"
+        code += self._f_ind + "DOUBLE PRECISION, INTENT(INOUT) :: DINT(NINT,*)\n\n"
+        code += "END SUBROUTINE ICND"
+        return code
+
+    def _f_fopt(self):
+        code = "SUBROUTINE FOPT(NDIM,U,ICP,PAR,IJAC,FS,DFDU,DFDP)\n\n"
+        code += self._f_ind + "IMPLICIT NONE\n"
+        code += self._f_ind + "INTEGER, INTENT(IN) :: NDIM, ICP(*), IJAC\n"
+        code += self._f_ind + "DOUBLE PRECISION, INTENT(IN) :: U(NDIM), PAR(*)\n"
+        code += self._f_ind + "DOUBLE PRECISION, INTENT(OUT) :: FS\n"
+        code += (
+            self._f_ind + "DOUBLE PRECISION, INTENT(INOUT) :: DFDU(NDIM),DFDP(*)\n\n"
+        )
+        code += "END SUBROUTINE FOPT"
+        return code
+
+    def _f_pvls(self):
+        code = "SUBROUTINE PVLS(NDIM,U,PAR)\n\n"
+        code += self._f_ind + "IMPLICIT NONE\n"
+        code += self._f_ind + "INTEGER, INTENT(IN) :: NDIM\n"
+        code += self._f_ind + "DOUBLE PRECISION, INTENT(IN) :: U(NDIM)\n"
+        code += self._f_ind + "DOUBLE PRECISION, INTENT(INOUT) :: PAR(*)\n\n"
+        code += "END SUBROUTINE PVLS"
+        return code
+
+    def write_func_file(self, basedir="./", silent=False):
+        fname = path.join(basedir, self.problem.problem_name + ".f90")
+        code = self._f_func() + "\n\n"
+        code += self._f_stpnt() + "\n\n"
+        code += self._f_bcnd() + "\n\n"
+        code += self._f_icnd() + "\n\n"
+        code += self._f_fopt() + "\n\n"
+        code += self._f_pvls()
+        with open(fname, "w") as outfile:
+            outfile.write(code)
+        if not silent:
+            print("File {:s} written.".format(fname))
+
+    def write_const_file(self, basedir="./", silent=False):
+        fname = path.join(basedir, "c." + self.problem.problem_name)
+        params = {}
+        params.update(self.problem.problem_parameters)
+        params.update(self.problem._other_parameters)
+        # if params["RL0"] == params["RL1"]:
+        # warn("Maximum load has the same value as minimum load.\n"+\
+        # "The calculation will not yield any results.")
+        with open(fname, "w") as outfile:
+            for name, val in params.items():
+                outstr = name + "\t=\t" + str(val) + "\n"
+                outfile.write(outstr)
+
+        if not silent:
+            print("File {:s} written.".format(fname))
+
+    def solve(self):
+        ddir = DataDir(name=self.problem.problem_name)
+        ddir.create()
+        dirc = str(ddir)
+        self.solution_dir = dirc
+        self.write_func_file(basedir=dirc, silent=True)
+        self.write_const_file(basedir=dirc, silent=True)
+        self.run_auto(dirc)
+        self.problem._solved = True
+        self.problem.solution = BifurcationProblemSolution()
+        self.problem.solution.read_solution(dirc)
+
+    def run_auto(self, dirc):
+        print("Running AUTO on problem " + self.problem.problem_name)
+        print("-" * 72)
+        command = ["@r", self.problem.problem_name]
+        process = Popen(
+            command,
+            stdout=PIPE,
+            stderr=PIPE,
+            cwd=dirc,
+            bufsize=1,
+            universal_newlines=True,
+            env = self._env,
+        )
+        out, err = process.communicate()
+        print(out)
+        print(err)
+        print("-" * 72)
+
+
+class BifurcationProblemSolution:
+    def __init__(self):
+        pass
+
+    def read_solution(self, dirc):
+        self.reader = AutoOutputReader(dirc)
+        self.raw_data = self.reader.read_raw_data()
