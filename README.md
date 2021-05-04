@@ -160,11 +160,18 @@ sudo apt install python3-pip
 ```
 
 ## 2.1 Installation
-To install pyfurc type
+To install pyfurc from TUB gitlab type
 
 ```shell
 pip3 install git+https://git.tu-berlin.de/klunkean/pyfurc
 ```
+
+To install pyfurc from github type
+
+```shell
+pip3 install git+https://github.com/klunkean/pyfurc
+```
+
 
 ## 2.2 Testing
 Open up a python 3 console and type `import pyfurc` if there is no error message the installation should have been successful.
