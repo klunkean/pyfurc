@@ -19,6 +19,7 @@ testing.ipynb
 *.docx
 *.log
 
+bumpversion.sh
 .python-version
 
 *trsh*
