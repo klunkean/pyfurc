@@ -270,6 +270,9 @@ class BifurcationProblemSolver:
                 + self._f_printer.doprint(load_info["value"]).lstrip()
                 + "\n"
             )
+        
+        code += "\n"
+        
         for para, para_dict in self.problem.energy.params.items():
             code += (
                 self._f_ind
@@ -278,6 +281,18 @@ class BifurcationProblemSolver:
                 + self._f_printer.doprint(para_dict["value"]).lstrip()
                 + "\n"
             )
+        
+        code += "\n"
+
+        for dof, dof_dict in self.problem.energy.dofs.items():
+            code += (
+                self._f_ind
+                + dof_dict["name"]
+                + " = "
+                + self._f_printer.doprint(dof_dict["value"]).lstrip()
+                + "\n"
+            )
+        
         # end body
         code += "\nEND SUBROUTINE STPNT"
         return code
