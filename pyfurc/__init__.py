@@ -1,5 +1,5 @@
 __author__ = "ak"
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 
 from pyfurc.core import PhysicalQuantity,\
                         Energy,\
