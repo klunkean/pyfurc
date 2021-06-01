@@ -24,3 +24,5 @@ bumpversion.sh
 
 *trsh*
 .env*
+
+doc/build

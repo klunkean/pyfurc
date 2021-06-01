@@ -10,6 +10,8 @@ python = "^3.8"
 numpy= "*"
 sympy= "*"
 pandas= "*"
+sphinx= "*"
+sphinx-rtd-theme= "*"
 
 [tool.poetry.dev-dependencies]
 pylint = "*"

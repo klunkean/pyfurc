@@ -10,6 +10,21 @@ from warnings import warn
 
 class PhysicalQuantity(Symbol):
     def __init__(self, name, quantity_type="parameter", value=0.0):
+        """Fundamental class for degrees of freedom and loads.
+
+        Parameters
+        ----------
+        name : str
+            The name that will be displayed in outputs. When working
+            in a jupyter notebook, LaTeX symbols can be used, e.g. 
+            ``\\varphi``.
+        quantity_type : str, optional
+            One of ``load``, ``dof``, or ``parameter``, by default ``parameter``
+        value : float, optional
+            Initial value if `quantity_type` is `load` or `dof`.
+            Value if `quantity_type` is `parameter`. 
+            Default is 0.0.
+        """        
         super().__init__()
         possible_quantity_types = ["load", "dof", "parameter"]
         if quantity_type.lower() not in possible_quantity_types:
@@ -362,9 +377,6 @@ class BifurcationProblemSolver:
         params = {}
         params.update(self.problem.problem_parameters)
         params.update(self.problem._other_parameters)
-        # if params["RL0"] == params["RL1"]:
-        # warn("Maximum load has the same value as minimum load.\n"+\
-        # "The calculation will not yield any results.")
         with open(fname, "w") as outfile:
             for name, val in params.items():
                 outstr = name + "\t=\t" + str(val) + "\n"
