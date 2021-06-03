@@ -11,7 +11,7 @@ numpy= "*"
 sympy= "*"
 pandas= "*"
 sphinx= "*"
-sphinx-rtd-theme= "*"
+pydata-sphinx-theme= "*"
 
 [tool.poetry.dev-dependencies]
 pylint = "*"

@@ -6,6 +6,13 @@ from pandas import read_csv
 
 
 class AutoCodePrinter(FCodePrinter):
+    """Subclass of ``sympy.FCodePrinter`` with necessary parameters set
+    for printing AUTO-07p FORTRAN code.
+    
+    See Also
+    --------
+    :doc:`Sympy Code Generation <sympy:modules/codegen>`
+    """
     def __init__(self):
         settings = {"source_format": "free", "standard": 95}
         super().__init__(settings=settings)
@@ -27,8 +34,6 @@ class AutoCodePrinter(FCodePrinter):
 
     def _print_Zero(self,expr):
         return "0.0d0"
-
-# def _print_int(self, expr):
 
 
 class DataDir(object):

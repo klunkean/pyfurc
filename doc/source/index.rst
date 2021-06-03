@@ -1,19 +1,15 @@
-Welcome to pyfurc's documentation!
-==================================
+pyfurc User Guide
+====================
+Welcome to pyfurc's documentation and user guide.
 
+What is pyfurc?
+===============
+
+Contents
+========
 .. toctree::
    :maxdepth: 3
-   :caption: Contents:
-.. automodule:: pyfurc.core
-   :members:
-.. automodule:: pyfurc.util
-   :members:
 
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+   usage/installation.rst
+   usage/wsl.rst
+   api/apidoc
