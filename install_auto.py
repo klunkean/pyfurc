@@ -25,6 +25,7 @@ def unpack_auto_archive(archive_path, target_dir):
     os.rename(path_to_auto_dir, os.path.join(target_dir, "auto_07p"))
     return path_to_auto_dir
 
+
 def run_sh_with_output(command, directory):
     proc = subprocess.Popen(
         command,
@@ -42,32 +43,49 @@ def run_sh_with_output(command, directory):
     if return_code:
         raise subprocess.CalledProcessError(return_code, command)
 
+
 def run_auto_configure(auto_dir):
     command = [
-                "sh",
-                "configure",
-                "--enable-plaut=no",
-                "--enable-plaut04=no",
-            ]
-    
+        "sh",
+        "configure",
+        "--enable-plaut=no",
+        "--enable-plaut04=no",
+    ]
+
     return run_sh_with_output(command, auto_dir)
 
-    
 
 def run_make_auto(auto_dir):
-    command = [
-            "make"
-        ]
+    command = ["make"]
 
     return run_sh_with_output(command, auto_dir)
+
 
 def run_make_clean(auto_dir):
-    command = [
-            "make",
-            "clean"
-        ]
+    command = ["make", "clean"]
 
     return run_sh_with_output(command, auto_dir)
+
+
+def set_up_env_for_sh(auto_dir):
+    env_file = os.path.join(auto_dir, "cmds/auto.env.sh")
+    with open(env_file, "r") as ef:
+        env_content = ef.read()
+    env_content = env_content.replace(
+        "AUTO_DIR=$HOME/auto/07p", f"AUTO_DIR={auto_dir}"
+    )
+    with open(env_file, "w") as ef:
+        ef.write(env_content)
+
+    bashrc_file = os.path.join(os.getenv("HOME"), ".bashrc")
+
+    try: 
+        text = f"\n#AUTO-07p commands\nsource {env_file}"
+        with open(bashrc_file, "a") as  bf:
+            bf.write(text)
+        return 0
+    except FileNotFoundError:
+        return -1
 
 def main():
     home_dir = os.getenv("HOME")
@@ -75,27 +93,44 @@ def main():
     all_done = False
 
     state_fun_dict = {
-            "configure_auto" : {
-                "fun": run_auto_configure,
-                "output": "Running AUTO-07p configure script...",
-                "next_state": "build_auto"
-            },
-            "build_auto" :  {
-                "fun": run_make_auto,
-                "output": "Running make...",
-                "next_state": "make_clean"
-            },
-            "make_clean" : {
-                "fun": run_make_clean,
-                "output": "Running make clean...",
-                "next_state": "abort"
-            },
+        "configure_auto": {
+            "fun": run_auto_configure,
+            "output": "Running AUTO-07p configure script...",
+            "next_state": "build_auto",
+        },
+        "build_auto": {
+            "fun": run_make_auto,
+            "output": "Running make...",
+            "next_state": "make_clean",
+        },
+        "make_clean": {
+            "fun": run_make_clean,
+            "output": "Running make clean...",
+            "next_state": "configure_env",
+        },
     }
-    
+
     state = "check_prerequisites"
     while not all_done:
         if state == "check_prerequisites":
-            state = "abort"
+            print("Checking for prerequisites...")
+            preqs = ["gfortran", "gcc", "make"]
+            not_there = []
+            for p in preqs:
+                if not shutil.which(p):
+                    not_there.append(p)
+            if len(not_there) > 0:
+                print(f"{', '.join(not_there)} not installed.")
+                print(
+                    "Please install these programs before rerunning "
+                    "this script.\n"
+                    "On Ubuntu run the following command:\n"
+                    f"sudo apt update && sudo apt install {' '.join(not_there)}"
+                )
+                state = "abort"
+            else:
+                print("Done.")
+                state = "download_archive"
 
         elif state == "download_archive":
             # Get auto-archive from github
@@ -213,14 +248,38 @@ def main():
                 print("An Error has occured:")
                 print(e)
                 status = -1
-            
+
             if status == 0:
                 state = state_fun_dict[state]["next_state"]
             else:
                 state = "abort"
 
+        elif state == "configure_env":
+            shell = os.path.split(os.environ["SHELL"])[-1]
+            if shell not in ["bash"]:
+                print(
+                    "You are not using bash \n"
+                    "Please make sure to source the appropriate "
+                    "environment file in {auto_dir}/cmds/"
+                )
+                state = "abort"
+            else:
+                print("Modifying and sourcing environment file...")
+                status = set_up_env_for_sh(auto_dir)
+                if status == 0: 
+                    print("Done")
+                    state = "finished"
+                else:
+                    print("Could not find .bashrc.")
+                    print(f"Source {auto_dir}/cmds/auto_env.sh manually.")
+                
+
         elif state == "abort":
             print("Aborting...")
+            all_done = True
+
+        elif state == "finished":
+            print(f"AUTO-07p successfully installed to {auto_dir}.")
             all_done = True
 
 
