@@ -272,6 +272,10 @@ class BifurcationProblemSolver:
     def _auto_setup(self):
         #TODO change this, as it depends on locate and may break
         # if there's multiple auto.env.sh
+        # write AUTO_DIR to env
+        # self._env["AUTO_DIR"] = 
+        
+        # append 
         proc = Popen(
             ["locate", "auto.env.sh"], stdout=PIPE, stderr=PIPE
         )

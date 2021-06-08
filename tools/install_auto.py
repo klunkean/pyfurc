@@ -3,7 +3,7 @@ import os
 import shutil
 import urllib.request
 from zipfile import ZipFile
-
+import readline
 
 def get_auto_archive(target_dir):
     zipname = "auto.zip"
@@ -88,6 +88,8 @@ def set_up_env_for_sh(auto_dir):
         return -1
 
 def main():
+    readline.set_completer_delims(' \t\n=')
+    readline.parse_and_bind("tab: complete")
     home_dir = os.getenv("HOME")
     default_install_dir = os.path.join(home_dir, ".local/bin/")
     all_done = False
@@ -136,8 +138,7 @@ def main():
             # Get auto-archive from github
             try:
                 print("Downloading AUTO-07p archive from github...")
-                # auto_archive_path = get_auto_archive(home_dir)
-                auto_archive_path = "/home/andre/Downloads/auto.zip"
+                auto_archive_path = get_auto_archive(home_dir)
                 print("Done.\n")
                 state = "extract_archive_prep"
             except:
@@ -255,6 +256,7 @@ def main():
                 state = "abort"
 
         elif state == "configure_env":
+            #TODO replace this by writing conf file
             shell = os.path.split(os.environ["SHELL"])[-1]
             if shell not in ["bash"]:
                 print(

@@ -12,6 +12,7 @@ sympy= "*"
 pandas= "*"
 sphinx= "*"
 pydata-sphinx-theme= "*"
+appdirs = "*"
 
 [tool.poetry.dev-dependencies]
 pylint = "*"
@@ -25,3 +26,10 @@ bump2version = "*"
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-rA -q"
+testpaths = [
+    "test",
+]
