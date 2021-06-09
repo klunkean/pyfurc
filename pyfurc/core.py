@@ -1,16 +1,21 @@
+
 from sympy import Symbol, Rational, nfloat
 from sympy import Expr as spexpr
 from sympy import sin as sp_sin
 from sympy import pi as sp_pi
-from os import path, environ
+import os
 from subprocess import Popen, PIPE
+from warnings import warn
+from appdirs import AppDirs
+import configparser
+
 from pyfurc.util import (
     AutoCodePrinter,
     DataDir,
     ParamDict,
     AutoOutputReader,
 )
-from warnings import warn
+from tools.pyfurc_conf import get_conf_path
 
 
 class PhysicalQuantity(Symbol):
@@ -213,6 +218,7 @@ class BifurcationProblem:
         )
 
         self._f_printer = AutoCodePrinter()
+        
 
     def set_parameter(self, param, value):
         other = False
@@ -270,33 +276,15 @@ class BifurcationProblemSolver:
         self._auto_setup()
 
     def _auto_setup(self):
-        #TODO change this, as it depends on locate and may break
-        # if there's multiple auto.env.sh
-        # write AUTO_DIR to env
-        # self._env["AUTO_DIR"] = 
-        
-        # append 
-        proc = Popen(
-            ["locate", "auto.env.sh"], stdout=PIPE, stderr=PIPE
-        )
-        auto_dir_files = (
-            proc.communicate()[0].decode().rstrip().split("\n")
-        )
-        auto_dir_file = auto_dir_files[0]
-        with open(auto_dir_file, "r") as f:
-            for line in f.readlines():
-                if line.startswith("AUTO_DIR"):
-                    auto_path = line.split("=")[-1].rstrip()
+        conf_file_path = get_conf_path()
+        config = configparser.ConfigParser()
+        config.read_file(open(conf_file_path))
+        self.auto_dir = config["pyfurc"]["AUTO_DIR"]
 
-        proc = Popen(
-            ["echo $HOME"], stdout=PIPE, stderr=PIPE, shell=True
-        )
-        home_dir = proc.communicate()[0].decode().rstrip()
-        self.auto_dir = auto_path.replace("$HOME", home_dir)
-        self._env = environ.copy()
+        self._env = os.environ.copy()
         self._env["AUTO_DIR"] = self.auto_dir
         with open(
-            path.join(self.auto_dir, "cmds", "auto.env.sh"), "r"
+            os.path.join(self.auto_dir, "cmds", "auto.env.sh"), "r"
         ) as envf:
             for line in envf.readlines():
                 if line.startswith("PATH"):
@@ -452,7 +440,7 @@ class BifurcationProblemSolver:
         return code
 
     def write_func_file(self, basedir="./", silent=False):
-        fname = path.join(basedir, self.problem.problem_name + ".f90")
+        fname = os.path.join(basedir, self.problem.problem_name + ".f90")
         code = self._f_func() + "\n\n"
         code += self._f_stpnt() + "\n\n"
         code += self._f_bcnd() + "\n\n"
@@ -465,7 +453,7 @@ class BifurcationProblemSolver:
             print("File {:s} written.".format(fname))
 
     def write_const_file(self, basedir="./", silent=False):
-        fname = path.join(basedir, "c." + self.problem.problem_name)
+        fname = os.path.join(basedir, "c." + self.problem.problem_name)
         params = {}
         params.update(self.problem.problem_parameters)
         params.update(self.problem._other_parameters)

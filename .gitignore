@@ -27,3 +27,4 @@ bumpversion.sh
 
 doc/build
 graphics/
+testing_dir/

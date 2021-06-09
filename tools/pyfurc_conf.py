@@ -19,7 +19,23 @@ def get_default_auto_dir():
     default_install_dir = get_default_install_dir()
     default_auto_dir = os.path.join(default_install_dir, "auto_07p")
     return default_auto_dir
+
+def check_if_config_exists():
+    conf_path = get_conf_path()
+    return os.path.exists(conf_path)
+
+def check_if_auto_dir_is_valid(auto_dir):
+    env_path = os.path.join(auto_dir,"cmds/auto.env.sh")
+    if not os.path.exists(env_path):
+        out_str = (
+            f"Given auto directory {auto_dir} is invalid. "
+            "Check your config."
+        )
+        return -1, out_str
+    else:
+        return 0, ""
     
+
 def write_conf(auto_dir = None):
     all_done = False
     state = "get_auto_dir"
@@ -78,12 +94,3 @@ def write_conf(auto_dir = None):
     except KeyboardInterrupt:
         print("Aborted.")
     
-
-def check_if_auto_dir_is_valid(auto_dir):
-    env_path = os.path.join(auto_dir,"cmds/auto.env.sh")
-    if not os.path.exists(env_path):
-        out_str = f"Could not find environment file {env_path}. "
-        out_str+= "Are you sure this is the auto base directory?"
-        return -1, out_str
-    else:
-        return 0, ""
