@@ -1,9 +1,11 @@
 import subprocess
 import os
+import glob
 import shutil
 import urllib.request
 from zipfile import ZipFile
 import readline
+from tools.write_conf import write_conf
 
 def get_auto_archive(target_dir):
     zipname = "auto.zip"
@@ -108,7 +110,7 @@ def main():
         "make_clean": {
             "fun": run_make_clean,
             "output": "Running make clean...",
-            "next_state": "configure_env",
+            "next_state": "chmod",
         },
     }
 
@@ -255,26 +257,28 @@ def main():
             else:
                 state = "abort"
 
-        elif state == "configure_env":
-            #TODO replace this by writing conf file
-            shell = os.path.split(os.environ["SHELL"])[-1]
-            if shell not in ["bash"]:
-                print(
-                    "You are not using bash \n"
-                    "Please make sure to source the appropriate "
-                    "environment file in {auto_dir}/cmds/"
-                )
+        elif state == "chmod":
+            cmd_path = os.path.join(auto_dir,"cmds")
+            try:
+                print("chmod executables...")
+                for f in glob.glob(os.path.join(cmd_path,"@*")):
+                    os.chmod(f, 0o774)
+                print("Done")
+                state = "configure_env"
+            except Exception as e:
+                print("Something went wrong:")
+                print(e)
                 state = "abort"
-            else:
-                print("Modifying and sourcing environment file...")
-                status = set_up_env_for_sh(auto_dir)
-                if status == 0: 
-                    print("Done")
-                    state = "finished"
-                else:
-                    print("Could not find .bashrc.")
-                    print(f"Source {auto_dir}/cmds/auto_env.sh manually.")
-                
+
+        elif state == "configure_env":
+            try:
+                print("Writing config file...")
+                write_conf(auto_dir=auto_dir)
+                state = "finished"
+            except Exception as e:
+                print("Something went wrong:")
+                print(e)
+                state = "abort"              
 
         elif state == "abort":
             print("Aborting...")
@@ -282,6 +286,11 @@ def main():
 
         elif state == "finished":
             print(f"AUTO-07p successfully installed to {auto_dir}.")
+            print(
+                "If you want to run AUTO-07p commands in your shell"
+                "outside of pyfurc, you need to source the appropriate"
+                f"environment file in {auto_dir}/cmds."
+            )
             all_done = True
 
 
