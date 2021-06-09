@@ -1,0 +1,273 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Windows Subsystem for Linux &#8212; pyfurc 0.1.2 documentation</title>
+    
+  <link href="../_static/css/theme.css" rel="stylesheet" />
+  <link href="../_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/basic.css" />
+    
+  <link rel="preload" as="script" href="../_static/js/index.1c5a1a01449ed65a7b51.js">
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pyfurc API Reference" href="../api/apidoc.html" />
+    <link rel="prev" title="Installing AUTO-07p" href="install_auto.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en" />
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+
+  <div id="navbar-start">
+    
+    
+
+<a class="navbar-brand" href="../index.html">
+  <img src="../_static/logo.png" class="logo" alt="logo">
+</a>
+
+
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <ul id="navbar-main-elements" class="navbar-nav">
+    <li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="installation.html">
+  Installation Guide
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="install_auto.html">
+  Installing AUTO-07p
+ </a>
+</li>
+
+<li class="toctree-l1 current active nav-item">
+ <a class="current reference internal nav-link" href="#">
+  Windows Subsystem for Linux
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../api/apidoc.html">
+  pyfurc API Reference
+ </a>
+</li>
+
+    
+</ul>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+      </ul>
+      </div>
+      
+    </div>
+  </div>
+</div>
+    </nav>
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+            
+            <!-- Only show if we have sidebars configured, else just a small margin  -->
+            <div class="col-12 col-md-3 bd-sidebar"><h3><a href="../index.html">pyfurc User Guide</a></h3>
+<ul>
+<li><a class="reference internal" href="#">Windows Subsystem for Linux</a><ul>
+<li><a class="reference internal" href="#installing-windows-subsystem-for-linux">Installing Windows Subsystem for Linux</a></li>
+<li><a class="reference internal" href="#installing-windows-terminal">Installing Windows Terminal</a></li>
+<li><a class="reference internal" href="#accessing-the-ubuntu-subsystem">Accessing the Ubuntu Subsystem</a></li>
+</ul>
+</li>
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <div class="bd-toc-item active">
+    
+  </div>
+</nav>
+            </div>
+            
+          
+
+          
+          <div class="d-none d-xl-block col-xl-2 bd-toc">
+            
+              
+              <div class="toc-item">
+                
+<div class="tocsection onthispage pt-5 pb-3">
+    <i class="fas fa-list"></i> On this page
+</div>
+
+<nav id="bd-toc-nav">
+    <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#installing-windows-subsystem-for-linux">
+   Installing Windows Subsystem for Linux
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#installing-windows-terminal">
+   Installing Windows Terminal
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#accessing-the-ubuntu-subsystem">
+   Accessing the Ubuntu Subsystem
+  </a>
+ </li>
+</ul>
+
+</nav>
+              </div>
+              
+            
+          </div>
+          
+
+          
+          
+            
+          
+          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+              
+              <div>
+                
+  <div class="section" id="windows-subsystem-for-linux">
+<h1>Windows Subsystem for Linux<a class="headerlink" href="#windows-subsystem-for-linux" title="Permalink to this headline">¶</a></h1>
+<p>Installation and usage of pyfurc on Windows systems has only been tested
+using the Windows Subsystem for Linux (WSL). This will be the prerequisite
+and is covered in the following section.</p>
+<div class="section" id="installing-windows-subsystem-for-linux">
+<h2>Installing Windows Subsystem for Linux<a class="headerlink" href="#installing-windows-subsystem-for-linux" title="Permalink to this headline">¶</a></h2>
+<p>For installing WSL follow the 6 manual installation steps from
+<a class="reference external" href="https://docs.microsoft.com/en-us/windows/wsl/install-win10#manual-installation-steps">this guide on microsoft.com</a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In step 6 make sure to install Ubuntu.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you run into errors you you may need to enable
+virtualization in your bios/UEFI. How to do this is manufacturer
+dependent.</p>
+<p>For Lenovo Thinkpads there is <a class="reference external" href="https://support.lenovo.com/lt/lt/solutions/ht500006-how-to-enable-virtualization-technology-on-lenovo-computers">this guide</a>
+for example.</p>
+</div>
+</div>
+<div class="section" id="installing-windows-terminal">
+<h2>Installing Windows Terminal<a class="headerlink" href="#installing-windows-terminal" title="Permalink to this headline">¶</a></h2>
+<p>After WSL is installed successfully, install <a class="reference external" href="https://www.microsoft.com/en-us/p/windows-terminal/9n0dx20hk701">Windows Terminal</a>
+from the Microsoft Store (free).</p>
+<p>You now have access to a Ubuntu system running inside your Windows 10 system.</p>
+</div>
+<div class="section" id="accessing-the-ubuntu-subsystem">
+<h2>Accessing the Ubuntu Subsystem<a class="headerlink" href="#accessing-the-ubuntu-subsystem" title="Permalink to this headline">¶</a></h2>
+<p>To access Ubuntu start <em>Windows Terminal</em> and click on the <strong>+</strong> in the
+window frame to open a new tab. Select Ubuntu:</p>
+<img alt="../_images/windows_terminal_ubuntu.png" src="../_images/windows_terminal_ubuntu.png" />
+<p>You are now prompted with a Ubuntu command line. We will call this
+<em>Ubuntu Terminal</em> from now on.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Ubuntu has its own file system separate from your Windows file system.</p>
+<p>To access the Ubuntu file system from Windows type <code class="docutils literal notranslate"><span class="pre">\\wsl$</span></code> into the
+address bar of a Windows Explorer window. You can then navigate to
+your home directory (Ubuntu &gt; home &gt; username).</p>
+</div>
+</div>
+</div>
+
+
+              </div>
+              
+              
+              <div class='prev-next-bottom'>
+                
+    <a class='left-prev' id="prev-link" href="install_auto.html" title="previous page">Installing AUTO-07p</a>
+    <a class='right-next' id="next-link" href="../api/apidoc.html" title="next page">pyfurc API Reference</a>
+
+              </div>
+              
+          </main>
+          
+
+      </div>
+    </div>
+  
+  <script src="../_static/js/index.1c5a1a01449ed65a7b51.js"></script>
+
+  <footer class="footer mt-5 mt-md-0">
+  <div class="container">
+    
+    <div class="footer-item">
+      <p class="copyright">
+    &copy; Copyright 2021, Andre Klunker.<br/>
+</p>
+    </div>
+    
+    <div class="footer-item">
+      <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.0.2.<br/>
+</p>
+    </div>
+    
+  </div>
+</footer>
+  </body>
+</html>
