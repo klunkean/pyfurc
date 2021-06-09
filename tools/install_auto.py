@@ -225,10 +225,11 @@ def main():
                     try:
                         os.makedirs(target_dir)
                         state = "extracht_archive"
-                    except OSError:
+                    except OSError as e:
                         print(
-                            "Could not create directory {target_dir}.\n"
+                            "Could not create directory {target_dir}."
                         )
+                        print(e)
                         state = "abort"
 
             elif state == "extract_archive":
