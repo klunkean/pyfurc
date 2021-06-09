@@ -329,7 +329,7 @@ class BifurcationProblemSolver:
         )
         code += self._f_ind + "DOUBLE PRECISION, INTENT(IN) :: T\n\n"
         # body
-        for load, load_info in self.problem.energy.load.items():
+        for _, load_info in self.problem.energy.load.items():
             code += (
                 self._f_ind
                 + load_info["name"]
@@ -340,7 +340,7 @@ class BifurcationProblemSolver:
 
         code += "\n"
 
-        for para, para_dict in self.problem.energy.params.items():
+        for _, para_dict in self.problem.energy.params.items():
             code += (
                 self._f_ind
                 + para_dict["name"]
@@ -351,7 +351,7 @@ class BifurcationProblemSolver:
 
         code += "\n"
 
-        for dof, dof_dict in self.problem.energy.dofs.items():
+        for _, dof_dict in self.problem.energy.dofs.items():
             code += (
                 self._f_ind
                 + dof_dict["name"]
