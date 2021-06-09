@@ -1,5 +1,5 @@
-Installing AUTO-07p
-===================
+Manually installing AUTO-07p on Ubuntu
+======================================
 
 .. note::
    From here on we assume a running Ubuntu system. 
@@ -8,8 +8,19 @@ Installing AUTO-07p
 
 As a python interface to `AUTO-07p <http://indy.cs.concordia.ca/auto/>`_ 
 (`GitHub <https://github.com/auto-07p/auto-07p>`_), pyfurc relies on a
-working installation of AUTO-07p. The installation will be covered in this section.
+working installation of AUTO-07p. 
 
+.. note::
+   It is recommended to use the provided installation script to install AUTO-07p
+
+   ::
+
+      python3 -m pyfurc --install-auto
+
+The manual installation will be covered in the following sections.
+
+AUTO-07p Prerequisites
+----------------------
 AUTO-07p relies on FORTRAN and C++ for which compilers have to be installed.
 
 In a Ubuntu Terminal enter
@@ -31,80 +42,94 @@ to install the compilers.
 
 Short version for experienced Users
 -----------------------------------
+
+Installing AUTO
+***************
+
 .. note::
    This short version is intended for experienced users.
 
    A step by step guide for Windows Subsystem for Linux users 
    can be found below.
 
-1. Download AUTO-07p via 
-   `SourceForge <https://sourceforge.net/projects/auto-07p/>`_
-
-2. Extract the archive ``auto07p-x.x.x.tar.gz``:
+1. ``cd`` into the directory you want AUTO-07p to be installed in
+   (e.g. ``~/.local/bin``) and clone the AUTO-07p github repository:
    
-3. Move the extracted directory to a location where you want `auto`
-   to be installed.
+   ::
 
-   I chose ``~/.local/bin``, replace this with your choice in the following steps.
-4. Open a terminal in the directory ``~/.local/bin/auto/07p``
-5. Run 
+      git clone https://github.com/auto-07p/auto-07p.git
+   
+   
+2. ``cd`` into the ``auto-07p`` directory and run
    ::
 
       ./configure --enable-plaut=no --enable-plaut04=no
 
-6. If configuration was successful, run 
+3. If configuration was successful, run 
    :: 
 
       make
       
    in the same directory.
 
-7. After compilation is done type 
+4. After compilation is done type 
    ::
 
       make clean 
       
    to remove auxiliary files
 
-8. To make AUTO-07p commands usable you need to make a change in the 
-   environment file ``auto/07p/cmds/auto.env.sh``. 
-   Open that file and change the line
+Making AUTO-07p usable with pyfurc
+**********************************
 
-   ::
+If you successfully completed the above installation of AUTO-07p, you have
+to configure pyfurc such that it can find your AUTO-07p installation.
+
+Either run
+
+::
+
+   python3 -m pyfurc --
+
+.. 5. To make AUTO-07p commands usable you need to make a change in the 
+..    environment file ``auto-07p/cmds/auto.env.sh``. 
+..    Open that file and change the line
+
+..    ::
    
-      AUTO_DIR=$HOME/auto/07p
+..       AUTO_DIR=$HOME/auto/07p
 
-   to the following line. Make sure to insert the directory you chose for
-   installation.
+..    to the following line. Make sure to insert the directory you chose for
+..    installation.
 
-   ::
+..    ::
    
-      AUTO_DIR=$HOME/.local/bin/auto/07p
-
-9. Source that environment file. If you're using bash or something 
-   similar, just add the line
-
-   ::
+..       AUTO_DIR=$HOME/.local/bin/auto/07p
    
-      source $HOME/.local/bin/auto/07p/cmds/auto.env.sh
+.. 6. Source the environment file. If you're using bash or something 
+..    similar, just add the line
 
-   to your ``~/.bashrc`` file. Make sure to insert the directory you chose for
-   installation.
+..    ::
+   
+..       source $HOME/.local/bin/auto/07p/cmds/auto.env.sh
 
-10. Close your terminal and open a new one, type
-    ::
+..    to your ``~/.bashrc`` file. Make sure to insert the directory you chose for
+..    installation.
+
+.. 7.  Close your terminal and open a new one, type
+..     ::
       
-      @r 
+..       @r 
       
-    If your output is:
-    ::
+..     If your output is:
+..     ::
    
-      xyz/auto/07p/cmds/@r: cannot open c..: No such file
+..       xyz/auto/07p/cmds/@r: cannot open c..: No such file
    
-    Then it is likely that the installation was **successful**. 
-    Likewise, if the output is
-    ::
+..     Then it is likely that the installation was **successful**. 
+..     Likewise, if the output is
+..     ::
    
-      @r: command not found
+..       @r: command not found
    
-    something went wrong.
+..     something went wrong.

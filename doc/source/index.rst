@@ -9,14 +9,23 @@ mechanical systems exhibiting bifurcations with the generalized
 path-following FORTRAN program `AUTO-07p <http://indy.cs.concordia.ca/auto/>`_
 directly in python. 
 
-Using  `sympy <https://docs.sympy.org/latest/index.html>`_ functionality,
-energy expressions, degrees of freedom and loads are defined and 
-equilibrium equations are automatically derived symbolically.
+Energy expressions, degrees of freedom and loads are defined 
+using  `sympy <https://docs.sympy.org/latest/index.html>`_'s 
+symbolic math processing functionality, and equilibrium equations 
+are automatically derived symbolically.
 
-On that basis, pyfurc generates FORTRAN code for the problem, 
-calls the AUTO routines and reads the result into a 
+pyfurc then generates FORTRAN code for the bifurcation problem, 
+calls the AUTO-07p routines and reads the result into a 
 `pandas <https://pandas.pydata.org/docs/user_guide/index.html>`_ DataFrame
 for post-processing in python.
+
+The basic functionality looks like this:
+
+.. image:: /_static/img/pyfurc_diagram.png
+   :width: 500px
+   :align: center
+
+|
 
 Solving a bifurcation problem can be this simple:
 
@@ -41,13 +50,40 @@ Solving a bifurcation problem can be this simple:
    for dat in bf.solution.raw_data:
       plt.plot(dat["U(1)"], dat["PAR(1)"])
 
+To get started, check out the Quickstart section below or check the 
+in-depth guides in the :ref:`Table of Contents <contents>`.
+
+Quickstart
+==========
+Prerequisites:
+
+* Running Linux distribution 
+  (check the :doc:`wsl guide </usage/wsl>` for Windows 10)
+* Python 3.8.2+
+* pip
+
+For installation of pyfurc run
+
+::
+
+   pip3 install pyfurc
+
+If the installation was successful run
+
+::
+
+   python3 -m pyfurc --install-auto
+
+to install and configure AUTO-07p. 
+
+After this you're ready to go.
+
 
 Contents
 ========
 .. toctree::
    :maxdepth: 3
 
-   usage/quickstart.rst
    usage/installation.rst
    usage/install_auto.rst
    usage/wsl.rst

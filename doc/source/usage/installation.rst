@@ -1,6 +1,6 @@
-==================
-Installation Guide
-==================
+=========================
+Manual Installation Guide
+=========================
 At the end of this guide you ideally have a working environment to use pyfurc
 in. 
 
