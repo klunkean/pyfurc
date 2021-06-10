@@ -61,7 +61,7 @@ Prerequisites:
 * Python 3.8.2+
 * pip
 
-For installation of pyfurc run
+For installing pyfurc run
 
 ::
 
