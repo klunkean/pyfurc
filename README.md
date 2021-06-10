@@ -1,179 +1,73 @@
-# pyfurc
-This package enables energetic equilibrium calculations as encountered in mechanical stability problems using AUTO-07p from within python.
+# What is pyfurc?
 
-# 1 Prerequisites
-Please use a Linux system for everything. I have no idea if and how everything works under Windows / MacOS.
+pyfurc is a python module that facilitates calculations for non-linear
+mechanical systems exhibiting bifurcations with the generalized 
+path-following FORTRAN program [AUTO-07p](http://indy.cs.concordia.ca/auto/)
+directly in python. 
 
-## 1.1 Windows Subsystem for Linux (WSL)
+Energy expressions, degrees of freedom and loads are defined 
+using  [sympy](https://docs.sympy.org/latest/index.html)
+symbolic math processing functionality, and equilibrium equations 
+are automatically derived symbolically.
 
-* For installing WSL first follow the 6 manual installation steps found here:
-https://docs.microsoft.com/en-us/windows/wsl/install-win10
-In step 6 make sure to use Ubuntu.
+pyfurc then generates FORTRAN code for the bifurcation problem, 
+calls the AUTO-07p routines and reads the result into a 
+[pandas](https://pandas.pydata.org/docs/user_guide/index.html) DataFrame
+for post-processing in python.
 
-* Install Windows Terminal from the Windows Store
+The basic functionality looks like this:
 
-* Open Windows Terminal and create a new Ubuntu Tab (Found in the drop down arrow right next to the plus in the top bar)
+<img src="doc/source/_static/img/pyfurc_diagram.png" alt="drawing" width="550"/>
 
-**Accessing Windows file system from within Linux**
-We can access the windows file system from the`/mnt/c` for example:
-`cd /mnt/c/Users/Andre/Desktop` for Andre's Desktop.
+## Solving a bifurcation problem can be this simple:
 
-**Accessing Linux file system with Windows Explorer**
-* Make sure your Linux subsystem is running (open up a Ubuntu Windows Terminal)
-* Open up Windows explorer and enter `\\wsl$` into the address bar
+```python
+import pyfurc as pf
+import sympy as sp
+import matplotlib.pyplot as plt
 
-## 1.2a Step-by-step WSL guide to installing AUTO-07p
-0. Open a Ubuntu Windows Terminal (see above) and install the Fortran compiler `gfortran`, the C++ Compiler `g++` and the compilation utility `make` in the Linux subsystem (prerequisite for AUTO-07p) :
-```shell
-sudo apt-get update
-sudo apt install gfortran
-sudo apt install make
-sudo apt install g++
-```
-1. Using your standard browser in Windows, download AUTO-07p via SourceForge:
-https://sourceforge.net/projects/auto-07p/
-2. In the Ubuntu Terminal, create a directory to store the AUTO-07p code in:
+phi = pf.PhysicalQuantity("\\varphi", quantity_type="DOF")
+P = pf.PhysicalQuantity("P", quantity_type="load")
+cT = 10/3.1415
+ell = 0.5
 
-```shell
-mkdir ~/.local
-mkdir ~/.local/bin
-```
+V = pf.Energy(1/2*cT*phi**2-P*ell*(1-sp.cos(phi)))
+bf = pf.BifurcationProblem(V, name="hinged_cantilever")
+bf.set_parameter("RL1", 12.73)  #set maximum load
 
-2. In the Terminal, move the downloaded file from its download location to the directory we just created. For me, the archive was downloaded to `C:\Users\Andre\Downloads` so I used
+solver = pf.BifurcationProblemSolver(bf)
+solver.solve()  # solve problem
 
-```shell
-mv /mnt/c/Users/Andre/Downloads/auto07p-0.9.1.tar.gz ~/.local/bin
-```
-3. Change into the newly created directory 
-
-```shell
-cd ~/.local/bin
+for dat in bf.solution.raw_data:
+    plt.plot(dat["U(1)"], dat["PAR(1)"])
 ```
 
-4. Extract the archive
+To get started, check out the Quickstart section below or check the 
+in-depth guides in the [Documentation](https://pyfurc.readthedocs.io/en/latest/).
 
-```shell
-tar zxvf auto07p-0.9.1.tar.gz
+# Quickstart
+
+Prerequisites:
+
+* Running Linux distribution 
+* Python 3.8.2+
+* pip
+
+For installation of pyfurc run
+
+```bash
+pip3 install pyfurc
 ```
 
-5. Change into the 07p directory
+If the installation was successful run
 
-```shell
-cd ~/.local/bin/auto/07p
+```bash
+python3 -m pyfurc --install-auto
 ```
-
-6. Run
-
-```shell
-./configure --enable-plaut=no --enable-plaut04=no
-```
-
-7. If configuration was successful, run 
-```shell
-make
-```
-
-8. After compilation is done type `make clean` to remove auxiliary files
-
-9. In a Windows Explorer Window navigate to `\\wsl$\Ubuntu\home\username\.local\bin\auto\07p\cmds` 
-    * open the file `auto.env.sh` with a text editor (e.g. notepad++)
-    * change the line  
-    `AUTO_DIR=$HOME/auto/07p`
-    to 
-    `AUTO_DIR=$HOME/.local/bin/auto/07p`
-    * save and close the file
-
-10. In a Windows Explorer Window navigate to `\\wsl$\Ubuntu\home` 
-    * open the file `.bashrc` with a text editor
-    * append the line 
-    ```shell
-    source $HOME/.local/bin/auto/07p/cmds/auto.env.sh
-    ```
-    * save and close the file
-
-11. Go back to the Ubuntu Terminal and type
-```shell
-source ~/.bashrc
-```
-12. First check if it might have worked: 
-Type `@r` and hit enter. If your output is something like
-```shell
-xxx/auto/07p/cmds/@r: cannot open c..: No such file
-```
-Then it is likely that the installation was successful. Likewise, if the output is 
-
-```shell
-@r: command not found
-```
-
-something went wrong.
-
-## 1.2b Installing AUTO-07p on Linux
-Download AUTO-07p via SourceForge:
-https://sourceforge.net/projects/auto-07p/
-
-Once you have downloaded the archive `auto07p-x.x.x.tar.gz`:
-1. Extract the archive
-2. (optional) Move the extracted directory `auto` to another location. I chose `~/.local/bin`
-3. Open a terminal in the directory `~/.local/bin/auto/07p`
-4. Run `./configure --enable-plaut=no --enable-plaut04=no`
-5. If configuration was successful, run `make` (in the same directory)
-6. After compilation is done type `make clean` to remove auxiliary files
-
-To make AUTO-07p commands usable you need to make a change in the environment file `auto/07p/cmds/auto.env.sh`. Open that file and change the line  
-```shell
-AUTO_DIR=$HOME/auto/07p
-```
-to 
-```shell
-AUTO_DIR=$HOME/.local/bin/auto/07p
-```
-
-Now source that environment file. If you're using `bash` or something similar, just add the line
-
-```shell
-source xyz/auto/07p/cmds/auto.env.sh
-```
-
-to your `~/.bashrc` file.
-
-Now close your terminal and open a new one, type `@r` and hit enter. If your output is:
-
-```shell
-xyz/auto/07p/cmds/@r: cannot open c..: No such file
-```
-
-Then it is likely that the installation was successful. Likewise, if the output is 
-
-```shell
-@r: command not found
-```
-
-something went wrong.
-
-# 2 Installing pyfurc
-You will need python 3.8 or higher for everything to work as intended. This is the version included in the latest Ubuntu LTS release (20.04). I recommend pyenv for managing different python versions if you need to install a newer version.
-
-For installation you will also need the python package manager `pip`. On Ubuntu and similar systems you can install `pip` by typing 
-```shell
-sudo apt install python3-pip
-```
-
-## 2.1 Installation
-To install pyfurc from TUB gitlab type
-
-```shell
-pip3 install git+https://git.tu-berlin.de/klunkean/pyfurc
-```
-
-To install pyfurc from github type
-
-```shell
-pip3 install git+https://github.com/klunkean/pyfurc
-```
+to install and configure AUTO-07p. 
 
 
-## 2.2 Testing
+<!-- ## 2.2 Testing
 Open up a python 3 console and type `import pyfurc` if there is no error message the installation should have been successful.
 
 # 3 Installing and using Jupyter-Notebook on WSL
@@ -487,4 +381,4 @@ Output
 * Add support for continuous systems (Ritz)
 * Automatic assembly of the Hessian, symbolic determination of critical points
 * Automatic evaluation of the stability of equilibrium paths
-* Expand postprocessing capabilities
+* Expand postprocessing capabilities -->
