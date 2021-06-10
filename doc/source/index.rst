@@ -1,7 +1,3 @@
-pyfurc User Guide
-====================
-Welcome to pyfurc's documentation and user guide.
-
 What is pyfurc?
 ===============
 pyfurc is a python module that facilitates calculations for non-linear

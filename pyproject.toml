@@ -11,9 +11,9 @@ python = "^3.8"
 numpy= "*"
 sympy= "*"
 pandas= "*"
+appdirs = "*"
 sphinx= "*"
 pydata-sphinx-theme= "*"
-appdirs = "*"
 
 [tool.poetry.dev-dependencies]
 pylint = "*"
@@ -27,6 +27,10 @@ bump2version = "*"
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.urls]
+"Website" = "https://github.com/klunkean/pyfurc"
+"Documentation" = "https://pyfurc.readthedocs.io/"
 
 [tool.pytest.ini_options]
 minversion = "6.0"

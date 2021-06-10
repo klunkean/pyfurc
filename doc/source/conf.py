@@ -19,8 +19,8 @@ sys.path.insert(0, os.path.abspath("../../pyfurc/"))
 # -- Project information -----------------------------------------------------
 
 project = "pyfurc"
-copyright = "2021, Andre Klunker"
-author = "Andre Klunker"
+copyright = "2021, klunkean"
+author = "klunkean"
 
 # The full version, including alpha/beta/rc tags
 release = "0.1.2"
@@ -73,6 +73,8 @@ html_theme_options = {
 }
 
 html_logo = "_static/logo.png"
+
+html_favicon = "_static/favicon.png"
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
