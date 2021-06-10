@@ -2,7 +2,7 @@ import subprocess
 import os
 import glob
 import shutil
-from tools.pyfurc_conf import get_default_install_dir, write_conf
+from tools.pyfurc_conf import get_default_auto_dir, get_default_install_dir, write_conf
 import urllib.request
 from zipfile import ZipFile
 import readline
@@ -25,7 +25,8 @@ def unpack_auto_archive(archive_path, target_dir):
 
     path_to_auto_dir = os.path.join(zip_path, auto_dir_name)
 
-    os.rename(path_to_auto_dir, os.path.join(target_dir, "auto_07p"))
+    auto_dir_name = os.path.split(get_default_auto_dir())[-1]
+    os.rename(path_to_auto_dir, os.path.join(target_dir, auto_dir_name))
     return path_to_auto_dir
 
 
@@ -96,7 +97,7 @@ def main():
         readline.set_completer_delims(" \t\n=")
         readline.parse_and_bind("tab: complete")
         home_dir = os.getenv("HOME")
-        default_install_dir = get_default_install_dir()
+        
         all_done = False
 
         state_fun_dict = {
@@ -160,6 +161,9 @@ def main():
                 # extract archive to installation directory
                 create_dir = False
                 target_done = False
+
+                default_install_dir = get_default_install_dir()
+                default_auto_dir = get_default_auto_dir()
                 while not target_done:
                     # Select installation directory
                     use_default = input(
@@ -168,6 +172,7 @@ def main():
                     if use_default.lower() in ["y", ""]:
                         target_dir = default_install_dir
                         target_done = True
+                        auto_dir = default_auto_dir
 
                     elif use_default.lower() == "n":
                         user_dir = input(
@@ -175,11 +180,13 @@ def main():
                         )
                         user_dir = os.path.abspath(user_dir)
                         target_dir = user_dir
+                        auto_dir = os.path.join(
+                            target_dir, os.path.split(default_auto_dir)[-1]
+                        )
                         target_done = True
                     else:
                         print("Invalid input.")
 
-                auto_dir = os.path.join(target_dir, "auto_07p")
                 if not os.path.exists(target_dir):
                     # selected directory does not exist, create?
                     target_dir_does_not_exist_done = False
@@ -205,7 +212,7 @@ def main():
                     overwrite_done = False
                     while not overwrite_done:
                         overwrite = input(
-                            "auto_07p already present in target directory "
+                            "auto-07p already present in target directory "
                             "Overwrite? ([y]/n]) "
                         )
                         if overwrite.lower() in ["y", ""]:

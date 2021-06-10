@@ -17,7 +17,7 @@ def get_default_install_dir():
 
 def get_default_auto_dir():
     default_install_dir = get_default_install_dir()
-    default_auto_dir = os.path.join(default_install_dir, "auto_07p")
+    default_auto_dir = os.path.join(default_install_dir, "auto-07p")
     return default_auto_dir
 
 def check_if_config_exists():
