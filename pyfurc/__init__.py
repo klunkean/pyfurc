@@ -1,5 +1,5 @@
 __author__ = "ak"
-__version__ = "0.1.5"
+__version__ = "0.1.6"
 import os, configparser, warnings
 
 from pyfurc.tools import (
