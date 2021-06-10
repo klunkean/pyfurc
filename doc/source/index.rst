@@ -1,5 +1,9 @@
+pyfurc Documentation
+====================
+Welcome to pyfurc's documentation and user guide.
+
 What is pyfurc?
-===============
++++++++++++++++
 pyfurc is a python module that facilitates calculations for non-linear
 mechanical systems exhibiting bifurcations with the generalized 
 path-following FORTRAN program `AUTO-07p <http://indy.cs.concordia.ca/auto/>`_
@@ -50,7 +54,7 @@ To get started, check out the Quickstart section below or check the
 in-depth guides in the :ref:`Table of Contents <contents>`.
 
 Quickstart
-==========
+++++++++++
 Prerequisites:
 
 * Running Linux distribution 
@@ -75,10 +79,11 @@ After this you're ready to go.
 
 
 Contents
-========
+++++++++
+
 .. toctree::
    :maxdepth: 2
 
    usage/index
-   develop/dev_basics.rst
+   develop/dev_basics
    api/apidoc
