@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pyfurc"
-version = "0.1.4"
+version = "0.1.5"
 description = "AUTO-07p made accessible through python."
 authors = ["klunkean <klunkean@posteo.de>"]
 maintainers = ["klunkean <klunkean@posteo.de>"]
