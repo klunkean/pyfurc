@@ -295,8 +295,8 @@ def main():
             elif state == "finished":
                 print(f"AUTO-07p successfully installed to {auto_dir}.")
                 print(
-                    "If you want to run AUTO-07p commands in your shell"
-                    "outside of pyfurc, you need to source the appropriate"
+                    "If you want to run AUTO-07p commands in your shell "
+                    "outside of pyfurc, you need to source the appropriate "
                     f"environment file in {auto_dir}/cmds."
                 )
                 all_done = True
