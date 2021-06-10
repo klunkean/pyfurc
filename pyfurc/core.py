@@ -15,7 +15,7 @@ from pyfurc.util import (
     ParamDict,
     AutoOutputReader,
 )
-from tools.pyfurc_conf import get_conf_path
+from pyfurc.tools import get_conf_path
 
 
 class PhysicalQuantity(Symbol):

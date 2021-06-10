@@ -1,6 +1,5 @@
 from ctypes import ArgumentError
-from tools.install_auto import main as install_auto
-from tools.pyfurc_conf import write_conf
+from pyfurc.tools import install_auto, write_conf
 import argparse
 import sys
 

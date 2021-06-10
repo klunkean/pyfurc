@@ -2,7 +2,7 @@ __author__ = "ak"
 __version__ = "0.1.5"
 import os, configparser, warnings
 
-from tools.pyfurc_conf import (
+from pyfurc.tools import (
     check_if_auto_dir_is_valid,
     check_if_config_exists,
     get_conf_path,
