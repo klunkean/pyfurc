@@ -23,7 +23,7 @@ copyright = "2021, Andre Klunker"
 author = "Andre Klunker"
 
 # The full version, including alpha/beta/rc tags
-release = "0.1.2"
+release = "0.1.3"
 
 
 # -- General configuration ---------------------------------------------------
