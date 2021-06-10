@@ -54,7 +54,6 @@ Quickstart
 Prerequisites:
 
 * Running Linux distribution 
-  (check the :doc:`wsl guide </usage/installation_wsl>` for Windows 10)
 * Python 3.8.2+
 * pip
 
@@ -78,9 +77,8 @@ After this you're ready to go.
 Contents
 ========
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 2
 
-   
    usage/index
    develop/dev_basics.rst
    api/apidoc
