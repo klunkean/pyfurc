@@ -38,17 +38,9 @@ After updating the repositories is done, enter
 
 to install the compilers.
 
-Short version for experienced Users
------------------------------------
 
-Installing AUTO
-+++++++++++++++
-
-.. note::
-   This short version is intended for experienced users.
-
-   A step by step guide for Windows Subsystem for Linux users 
-   can be found below.
+Installing AUTO-07p
+-------------------
 
 1. ``cd`` into the directory you want AUTO-07p to be installed in
    (e.g. ``~/.local/bin``) and clone the AUTO-07p github repository:
@@ -81,7 +73,7 @@ Installing AUTO
    to remove auxiliary files
 
 Making AUTO-07p usable with pyfurc
-++++++++++++++++++++++++++++++++++
+----------------------------------
 
 If you successfully completed the above installation of AUTO-07p, you have
 to configure pyfurc such that it can find your AUTO-07p installation.
@@ -93,7 +85,16 @@ The recommended way is to run
    python3 -m pyfurc --set-auto-dir
 
 You can also manually edit your pyfurc configuration file. On Ubuntu
-it is located in  ``~/.local/share/pyfurc/pyfurc.conf``.
+it is expected in  ``~/.local/share/pyfurc/pyfurc.conf``. This file only
+contains one variable and looks like this:
+
+``pyfurc.conf``
+
+.. code-block:: bash
+
+   [pyfurc]
+   auto_dir = /path/to/auto_07p
+
 
 
 
