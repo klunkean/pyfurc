@@ -64,12 +64,12 @@ html_sidebars = {
     "**": [
         "globaltoc.html",
         "searchbox.html",
-        "sidebar-nav-bs.html",
+        # "sidebar-nav-bs.html",
     ]
 }
 html_theme_options = {
-    "show_toc_level": 1,
-    "page_sidebar_items": ["page-toc"],
+    "show_toc_level": 2,
+    # "page_sidebar_items": ["page-toc"],
 }
 
 html_logo = "_static/logo.png"
