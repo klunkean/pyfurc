@@ -1,30 +1,32 @@
+#vscode
 /.vscode/
 *.code-workspace
+
 # Local History for Visual Studio Code
 .history/
 
-*.goutputstream*
-
-#pipenv
-Pipfile*
-
+# poetry
 *.lock
-__pycache__
+dist/
 
-testing.py
-debug.py
-testing.ipynb
-*.ipynb_checkpoints
-*.bib
-*.docx
-*.log
-
-bumpversion.sh
+# pyenv
 .python-version
 
+# local dev files
+testing.ipynb
+debug.py
+*.ipynb_checkpoints
+*.log
+bumpversion.sh
 *trsh*
-.env*
+testing_dir/
 
+# documentation
 doc/build
 graphics/
-testing_dir/
+
+# compiled python
+__pycache__
+
+# pytest
+.pytest_cache/

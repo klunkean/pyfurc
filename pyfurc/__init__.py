@@ -31,7 +31,7 @@ if not conf_exists:
         f"no configuration file is present at {conf_path}. \n"
         "pyfurc will not be able to run AUTO-07p. "
         "To specify the path to AUTO-07p run\n"
-        "python -m pyfurc --change-auto-dir"
+        "python -m pyfurc --set-auto-dir"
         )
 else:
     ...
