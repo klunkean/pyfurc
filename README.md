@@ -68,7 +68,7 @@ to install and configure AUTO-07p.
 
 # Documentation
 
-The [Documentation](https://readthedocs.org/projects/pyfurc/) is hosted on readthedocs.
+The [Documentation](https://pyfurc.readthedocs.io/en/latest/) is hosted on readthedocs.
 
 
 
