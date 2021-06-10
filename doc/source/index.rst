@@ -82,4 +82,5 @@ Contents
 
    
    usage/index
+   develop/dev_basics.rst
    api/apidoc

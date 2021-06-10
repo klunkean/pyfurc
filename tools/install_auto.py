@@ -2,7 +2,7 @@ import subprocess
 import os
 import glob
 import shutil
-from tools.pyfurc_conf import get_default_auto_dir, get_default_install_dir, write_conf
+from .pyfurc_conf import get_default_auto_dir, get_default_install_dir, write_conf
 import urllib.request
 from zipfile import ZipFile
 import readline
@@ -308,7 +308,14 @@ def main():
                 )
                 all_done = True
     except KeyboardInterrupt:
-        print("Installation manually aborted...")
+        
+        print("\nInstallation manually aborted...")
+        try:
+            #remove archive if downloaded
+            os.remove(auto_archive_path)
+            print(f"Deleted downloaded archive {auto_archive_path}")
+        except NameError:
+            pass
 
 
 if __name__ == "__main__":
