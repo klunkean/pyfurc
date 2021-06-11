@@ -1,6 +1,7 @@
 #vscode
 /.vscode/
 *.code-workspace
+.VSCodeCounter/
 
 # Local History for Visual Studio Code
 .history/
@@ -33,3 +34,4 @@ __pycache__
 
 # dotenv
 .env
+
