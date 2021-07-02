@@ -1,12 +1,8 @@
 import pytest
+import pyfurc as pf
 
-# pyfurc local importer to make pyfurc available as pf in tests
-@pytest.fixture(scope="session", autouse=True)
-def pf():
-    import sys, os
-    module_path = os.path.abspath(".")
-    if module_path not in sys.path:
-        sys.path.insert(1, module_path)
-
-    import pyfurc as pf
-    return pf
+@pytest.fixture()
+def bf_problem():
+    """Standard BifurcationProblem fixture for testing. Uses hinged cantilever, i.e. symmetric bifurcation.
+    """
+    ...

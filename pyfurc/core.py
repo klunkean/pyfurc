@@ -1,4 +1,3 @@
-
 from sympy import Symbol, Rational, nfloat
 from sympy import Expr as spexpr
 from sympy import sin as sp_sin
@@ -7,7 +6,6 @@ import os
 from subprocess import Popen, PIPE
 from warnings import warn
 from appdirs import AppDirs
-import configparser
 
 from pyfurc.util import (
     AutoCodePrinter,
@@ -15,7 +13,7 @@ from pyfurc.util import (
     ParamDict,
     AutoOutputReader,
 )
-from pyfurc.tools import get_conf_path
+from pyfurc.tools import AutoHelper
 
 
 class PhysicalQuantity(Symbol):
@@ -35,8 +33,7 @@ class PhysicalQuantity(Symbol):
         Default is 0.0.
     """
 
-    def __new__(
-        cls, name, quantity_type="parameter", value=0.0):
+    def __new__(cls, name, quantity_type="parameter", value=0.0):
         obj = super().__new__(cls, name)
         possible_quantity_types = ["load", "dof", "parameter"]
         if quantity_type.lower() not in possible_quantity_types:
@@ -218,7 +215,6 @@ class BifurcationProblem:
         )
 
         self._f_printer = AutoCodePrinter()
-        
 
     def set_parameter(self, param, value):
         other = False
@@ -273,25 +269,7 @@ class BifurcationProblemSolver:
         self.problem = bf_problem
         self._f_printer = AutoCodePrinter()
         self._f_ind = "  "
-        self._auto_setup()
-
-    def _auto_setup(self):
-        conf_file_path = get_conf_path()
-        config = configparser.ConfigParser()
-        config.read_file(open(conf_file_path))
-        self.auto_dir = config["pyfurc"]["AUTO_DIR"]
-
-        self._env = os.environ.copy()
-        self._env["AUTO_DIR"] = self.auto_dir
-        with open(
-            os.path.join(self.auto_dir, "cmds", "auto.env.sh"), "r"
-        ) as envf:
-            for line in envf.readlines():
-                if line.startswith("PATH"):
-                    extend = line.split("=")[-1].rstrip()
-                    extend = extend.replace("$AUTO_DIR", self.auto_dir)
-                    newpath = self._env["PATH"] + f":{extend}"
-                    self._env["PATH"] = newpath
+        self.ah = AutoHelper()
 
     def _f_func(self):
         eq_exprs = self.problem._fortran_equilibriums()
@@ -440,7 +418,9 @@ class BifurcationProblemSolver:
         return code
 
     def write_func_file(self, basedir="./", silent=False):
-        fname = os.path.join(basedir, self.problem.problem_name + ".f90")
+        fname = os.path.join(
+            basedir, self.problem.problem_name + ".f90"
+        )
         code = self._f_func() + "\n\n"
         code += self._f_stpnt() + "\n\n"
         code += self._f_bcnd() + "\n\n"
@@ -480,6 +460,7 @@ class BifurcationProblemSolver:
     def run_auto(self, dirc):
         print("Running AUTO on problem " + self.problem.problem_name)
         print("-" * 72)
+        env = self.ah.setup_auto_exec_env()
         command = ["@r", self.problem.problem_name]
         process = Popen(
             command,
@@ -488,7 +469,7 @@ class BifurcationProblemSolver:
             cwd=dirc,
             bufsize=1,
             universal_newlines=True,
-            env=self._env,
+            env=env,
         )
         out, err = process.communicate()
         print(out)

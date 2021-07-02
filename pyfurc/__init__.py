@@ -3,9 +3,8 @@ __version__ = "0.1.6"
 import os, configparser, warnings
 
 from pyfurc.tools import (
-    check_if_auto_dir_is_valid,
-    check_if_config_exists,
-    get_conf_path,
+    AutoInstaller,
+    AutoHelper
 )
 
 from pyfurc.core import (
@@ -23,8 +22,11 @@ from pyfurc.util import (
     AutoOutputReader,
 )
 
-conf_exists = check_if_config_exists()
-conf_path = get_conf_path()
+ai = AutoInstaller()
+ah = AutoHelper()
+conf_exists = ai.check_if_config_exists()
+conf_path = ah.get_conf_path()
+
 if not conf_exists:
     warnings.warn(
         "AUTO-07p installation is unknown since "
