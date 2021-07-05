@@ -1,0 +1,312 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Manually installing AUTO-07p on Ubuntu &#8212; pyfurc 0.1.6 documentation</title>
+    
+  <link href="../_static/css/theme.css" rel="stylesheet" />
+  <link href="../_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/basic.css" />
+    
+  <link rel="preload" as="script" href="../_static/js/index.1c5a1a01449ed65a7b51.js">
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/favicon.png"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Developer Guide" href="../develop/dev_basics.html" />
+    <link rel="prev" title="Windows Subsystem for Linux" href="installation_wsl.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en" />
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+
+  <div id="navbar-start">
+    
+    
+
+<a class="navbar-brand" href="../index.html">
+  <img src="../_static/logo.png" class="logo" alt="logo">
+</a>
+
+
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <ul id="navbar-main-elements" class="navbar-nav">
+    <li class="toctree-l1 current active nav-item">
+ <a class="reference internal nav-link" href="index.html">
+  User Guide
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../develop/dev_basics.html">
+  Developer Guide
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../api/pyfurc.html">
+  pyfurc API Reference
+ </a>
+</li>
+
+    
+</ul>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+      </ul>
+      </div>
+      
+    </div>
+  </div>
+</div>
+    </nav>
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+            
+            <!-- Only show if we have sidebars configured, else just a small margin  -->
+            <div class="col-12 col-md-3 bd-sidebar"><h3><a href="../index.html">pyfurc Documentation</a></h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">User Guide</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="installation_ubuntu.html">Installing pyfurc on Ubuntu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation_wsl.html">Windows Subsystem for Linux</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Manually installing AUTO-07p on Ubuntu</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../develop/dev_basics.html">Developer Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../develop/dev_basics.html#tools">Tools</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api/pyfurc.html">pyfurc API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api/pyfurc.html#module-pyfurc.core">pyfurc.core module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/pyfurc.html#module-pyfurc.tools">pyfurc.tools module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/pyfurc.html#module-pyfurc.util">pyfurc.util module</a></li>
+</ul>
+</li>
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+            </div>
+            
+          
+
+          
+          <div class="d-none d-xl-block col-xl-2 bd-toc">
+            
+              
+              <div class="toc-item">
+                
+<div class="tocsection onthispage pt-5 pb-3">
+    <i class="fas fa-list"></i> On this page
+</div>
+
+<nav id="bd-toc-nav">
+    <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#auto-07p-prerequisites">
+   AUTO-07p Prerequisites
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#installing-auto-07p">
+   Installing AUTO-07p
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#making-auto-07p-usable-with-pyfurc">
+   Making AUTO-07p usable with pyfurc
+  </a>
+ </li>
+</ul>
+
+</nav>
+              </div>
+              
+              <div class="toc-item">
+                
+              </div>
+              
+            
+          </div>
+          
+
+          
+          
+            
+          
+          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+              
+              <div>
+                
+  <div class="section" id="manually-installing-auto-07p-on-ubuntu">
+<h1>Manually installing AUTO-07p on Ubuntu<a class="headerlink" href="#manually-installing-auto-07p-on-ubuntu" title="Permalink to this headline">¶</a></h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This guide assumes a running Ubuntu system.</p>
+</div>
+<p>As a python interface to <a class="reference external" href="http://indy.cs.concordia.ca/auto/">AUTO-07p</a>
+(<a class="reference external" href="https://github.com/auto-07p/auto-07p">GitHub</a>), pyfurc relies on a
+working installation of AUTO-07p.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>It is recommended to use the provided installation script to install AUTO-07p</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python3</span> <span class="o">-</span><span class="n">m</span> <span class="n">pyfurc</span> <span class="o">--</span><span class="n">install</span><span class="o">-</span><span class="n">auto</span>
+</pre></div>
+</div>
+</div>
+<p>The manual installation will be covered in the following sections.</p>
+<div class="section" id="auto-07p-prerequisites">
+<h2>AUTO-07p Prerequisites<a class="headerlink" href="#auto-07p-prerequisites" title="Permalink to this headline">¶</a></h2>
+<p>AUTO-07p relies on FORTRAN and C++ for which compilers have to be installed.</p>
+<p>In a Ubuntu Terminal enter</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">update</span>
+</pre></div>
+</div>
+<p>and hit return to update the software repositories.
+Enter your password when asked.</p>
+<p>After updating the repositories is done, enter</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span> <span class="n">install</span> <span class="n">gfortran</span><span class="p">,</span> <span class="n">make</span><span class="p">,</span> <span class="n">g</span><span class="o">++</span>
+</pre></div>
+</div>
+<p>to install the compilers.</p>
+</div>
+<div class="section" id="installing-auto-07p">
+<h2>Installing AUTO-07p<a class="headerlink" href="#installing-auto-07p" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic">
+<li><p><code class="docutils literal notranslate"><span class="pre">cd</span></code> into the directory you want AUTO-07p to be installed in
+(e.g. <code class="docutils literal notranslate"><span class="pre">~/.local/bin</span></code>) and clone the AUTO-07p github repository:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/auto-07p/auto-07p.git
+</pre></div>
+</div>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cd</span></code> into the <code class="docutils literal notranslate"><span class="pre">auto-07p</span></code> directory and run</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./configure --enable-plaut<span class="o">=</span>no --enable-plaut04<span class="o">=</span>no
+</pre></div>
+</div>
+</li>
+<li><p>If configuration was successful, run</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make
+</pre></div>
+</div>
+<p>in the same directory.</p>
+</li>
+<li><p>After compilation is done type</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make clean
+</pre></div>
+</div>
+<p>to remove auxiliary files</p>
+</li>
+</ol>
+</div>
+<div class="section" id="making-auto-07p-usable-with-pyfurc">
+<h2>Making AUTO-07p usable with pyfurc<a class="headerlink" href="#making-auto-07p-usable-with-pyfurc" title="Permalink to this headline">¶</a></h2>
+<p>If you successfully completed the above installation of AUTO-07p, you have
+to configure pyfurc such that it can find your AUTO-07p installation.</p>
+<p>The recommended way is to run</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3 -m pyfurc --set-auto-dir
+</pre></div>
+</div>
+<p>You can also manually edit your pyfurc configuration file. On Ubuntu
+it is expected in  <code class="docutils literal notranslate"><span class="pre">~/.local/share/pyfurc/pyfurc.conf</span></code>. This file only
+contains one variable and looks like this:</p>
+<p><code class="docutils literal notranslate"><span class="pre">pyfurc.conf</span></code></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>pyfurc<span class="o">]</span>
+<span class="nv">auto_dir</span> <span class="o">=</span> /path/to/auto_07p
+</pre></div>
+</div>
+</div>
+</div>
+
+
+              </div>
+              
+              
+              <div class='prev-next-bottom'>
+                
+    <a class='left-prev' id="prev-link" href="installation_wsl.html" title="previous page">Windows Subsystem for Linux</a>
+    <a class='right-next' id="next-link" href="../develop/dev_basics.html" title="next page">Developer Guide</a>
+
+              </div>
+              
+          </main>
+          
+
+      </div>
+    </div>
+  
+  <script src="../_static/js/index.1c5a1a01449ed65a7b51.js"></script>
+
+  <footer class="footer mt-5 mt-md-0">
+  <div class="container">
+    
+    <div class="footer-item">
+      <p class="copyright">
+    &copy; Copyright 2021, klunkean.<br/>
+</p>
+    </div>
+    
+    <div class="footer-item">
+      <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.0.2.<br/>
+</p>
+    </div>
+    
+  </div>
+</footer>
+  </body>
+</html>

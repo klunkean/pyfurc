@@ -10,6 +10,10 @@ from appdirs import AppDirs
 
 
 class AutoHelper:
+    """Helper class for getting the configuration file path and setting up an ``env`` with AUTO-07p executables added to ``PATH``.
+
+    This class is not intended to be used.
+    """
     def get_conf_path(self):
         dirs = AppDirs("pyfurc", "klunkean")
         user_dir = dirs.user_data_dir
@@ -42,6 +46,10 @@ class AutoHelper:
 
 
 class AutoInstaller:
+    """Class for managing download and installation of AUTO-07p.
+
+    This class is not intended to be used. The install script is called when running ``python -m pyfurc --install-auto``
+    """
     def __init__(self):
         self.ah = AutoHelper()
 

@@ -46,20 +46,14 @@ class PhysicalQuantity(Symbol):
         obj.value = value
         return obj
 
-    # def __init__(self, name, quantity_type="parameter", value=0.0):
-    #     super().__init__()
-    #     possible_quantity_types = ["load", "dof", "parameter"]
-    #     if quantity_type.lower() not in possible_quantity_types:
-    #         raise ValueError(
-    #             "quantity_type has to be one of: "
-    #             + ", ".join(possible_quantity_types)
-    #         )
-    #     self._name = None
-    #     self.quantity_type = quantity_type.lower()
-    #     self.value = value
-
-
 class Energy(spexpr):
+    """Container class for energy expressions.
+
+    Parameters
+    ----------
+    expr : valid sympy Expression e.g. ``sympy.Mul`` or ``sympy.Add`` containing exactly one `pyfurc.core.PhysicalQuantity` with ``quantity_type="load"``
+        
+    """
     def __init__(self, expr):
         self.expr = expr
         self.dofs = {}
