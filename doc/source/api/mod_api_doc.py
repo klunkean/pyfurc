@@ -8,9 +8,15 @@ with open(api_rst_path, "w") as outf:
     while i_line<len(lines):
         line = lines[i_line]
         if "pyfurc package" in line:
-            heading = "pyfurc API Reference"
+            heading = "pyfurc Reference"
+            introduction = """\
+                This is the reference page for classes and methods in the
+                pyfurc package. It is automatically rendered from 
+                docstrings in the source code.
+                """
             outl = heading+"\n"+len(heading)*"="+"\n"
-            i_line += 2
+            outl+= introduction+"\n"
+            i_line += 3
         elif "Submodules" in line:
             outl = ""
             i_line +=2

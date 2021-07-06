@@ -3,7 +3,7 @@
 
 # You can set these variables from the command line, and also
 # from the environment for the first two.
-SPHINXOPTS    ?= -aE
+SPHINXOPTS    ?= -aE #Always build even if no source file changed
 SPHINXBUILD   ?= sphinx-build
 SPHINXAPIDOC  = sphinx-apidoc
 SOURCEDIR     = source
@@ -22,6 +22,9 @@ help:
 %: Makefile
 	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
 
+# Modify the automatically generated apidoc including an introduction and
+# removing the Submodules heading. 
+# Check out the script doc/api/mod_api_doc.py
 api:
 	@$(SPHINXAPIDOC) -MTf -o $(APIDIR) $(MODULEPATH)
 	python $(APIDIR)/mod_api_doc.py

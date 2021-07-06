@@ -174,8 +174,10 @@ class Energy(spexpr):
 class BifurcationProblem:
     """Class for holding information on a bifurcation problem.
 
-    Objects of this class are defined by their :class:`pyfurc.core.Energy` expression and their ``name``.
-    Upon instantiation a :class:`pyfurc.core.ParamDict` is created that holds default values for the calculations in AUTO-07p.
+    Objects of this class are defined by their :class:`pyfurc.core.Energy` 
+    expression and their ``name``. Upon instantiation a 
+    :class:`pyfurc.util.AutoParameters` is created that holds default 
+    values for the calculations in AUTO-07p.
 
     Parameters
     ----------
@@ -213,6 +215,38 @@ class BifurcationProblem:
         self._f_printer = AutoCodePrinter()
 
     def set_parameter(self, param, value):
+        """Recommended way of changing values in ``problem_parameters``.
+
+        Parameters
+        ----------
+        param : str
+            Name of the parameter to change. 
+            See :class:`pyfurc.util.AutoParameters` for details.
+        value : 
+            The value to set ``param`` to.
+
+        Raises
+        ------
+        TypeError
+            If ``value`` has the wrong type.
+        KeyError
+            If ``param`` is not a valid parameter name.
+
+
+        .. Note::
+
+            You can also directly change the keys in ``problem_parameters``,
+            e.g. ``bf.problem_parameters[param] = value``.
+            This will, however, bypass the type and key checks.
+
+        Example
+        -------
+        >>> print(bf.problem_parameters["RL1"])
+        0.0
+        >>> bf.set_parameter("RL1", 1.0)
+        >>> print(bf.problem_parameters["RL1"])
+        1.0
+        """
         other = False
         if param in self._other_parameters.keys():
             warn(
