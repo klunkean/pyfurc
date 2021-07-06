@@ -1,6 +1,6 @@
 from sympy.printing.fortran import FCodePrinter
 from datetime import datetime as dt
-from os import system, path
+import os
 from pandas import read_csv
 
 class AutoCodePrinter(FCodePrinter):
@@ -29,13 +29,13 @@ class AutoCodePrinter(FCodePrinter):
 class DataDir(object):
     def __init__(self, base_dir="./", name=""):
         self.date_time = dt.now().strftime(r"%Y%m%d_%H%M%S")
-        self.directory = "".join([base_dir + name + "_", self.date_time, "/"])
+        self.directory = os.path.join(base_dir,f"{name}_{self.date_time}")
         self.codedir = self.directory + "code/"
-        self.dirCreated = False
+        self.dir_created = False
 
-    def create(self):
-        system("".join(["mkdir ", self.directory]))
-        self.dirCreated = True
+    def create_dir(self):
+        os.mkdir(self.directory)
+        self.dir_created = True
 
     def dir(self):
         return self.directory
@@ -43,11 +43,11 @@ class DataDir(object):
     def __str__(self):
         return self.directory
 
-    def createSubDir(self, name):
-        system("".join(["mkdir ", self.directory, "/", name]))
-        if not self.dirCreated:
-            self.dirCreated = True
-            system("".join(["mkdir ", self.directory]))
+    def create_subdir(self, name):
+        os.mkdir(os.path.join(self.directory, name))
+        if not self.dir_created:
+            self.dir_created = True
+            os.mkdir(self.directory)
         return self.directory + "/" + name + "/"
 
 
@@ -179,7 +179,7 @@ class HiddenAutoParameters(ParamDict):
 class AutoOutputReader(object):
     def __init__(self, dirc):
         self.dirc = dirc
-        self.outfile7 = path.join(self.dirc, "fort.7")
+        self.outfile7 = os.path.join(self.dirc, "fort.7")
 
     def read_raw_data(self):
         line_numbers = self.find_table_lines()

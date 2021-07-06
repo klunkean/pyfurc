@@ -190,8 +190,7 @@ class BifurcationProblem:
 
     Variables
     ---------
-    :ivar pyfurc.core.Energy energy: The energy expression passed on 
-    instantiation.
+    :ivar pyfurc.core.Energy energy: The energy expression passed on instantiation.
     :ivar dict dofs: Reference to ``energy.dofs``, dictionary holding ``dof`` names and values.
     :ivar pyfurc.util.ProblemParameters problem_parameters: AUTO-7p calculation parameters.
     :ivar str problem_name: Name of the bifurcation problem passed on instantiation. The calculation output folder will contain this name.
@@ -484,7 +483,7 @@ class BifurcationProblemSolver:
 
     def solve(self):
         ddir = DataDir(name=self.problem.problem_name)
-        ddir.create()
+        ddir.create_dir()
         dirc = str(ddir)
         self.solution_dir = dirc
         self.write_func_file(basedir=dirc, silent=True)
