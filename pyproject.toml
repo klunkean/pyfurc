@@ -22,6 +22,7 @@ jupyter = "*"
 notebook = "*"
 black = {version = "*", allow-prereleases = true, python = "^3.8"}
 bump2version = "*"
+pytest = "*"
 
 
 [build-system]

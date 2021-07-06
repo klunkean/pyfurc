@@ -86,4 +86,4 @@ Contents
 
    usage/index
    develop/dev_basics
-   api/apidoc
+   api/pyfurc

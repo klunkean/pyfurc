@@ -4,7 +4,6 @@ from datetime import date
 from os import system, path
 from pandas import read_csv
 
-
 class AutoCodePrinter(FCodePrinter):
     """Subclass of ``sympy.FCodePrinter`` with necessary parameters set
     for printing AUTO-07p FORTRAN code.
@@ -23,14 +22,6 @@ class AutoCodePrinter(FCodePrinter):
         except AttributeError:
             name = expr.name
         return name
-
-    # def _print_int(self, expr):
-        # print(expr)
-        # return super()._print_int(expr)
-
-    # def _print_Rational(self, expr):
-        # print(expr)
-        # return super()._print_Rational(expr)
 
     def _print_Zero(self,expr):
         return "0.0d0"
@@ -118,3 +109,5 @@ class AutoOutputReader(object):
             if not searching_for_start:  # last table since there is no zero at the end
                 line_numbers.append([start_line, line_number])
         return line_numbers
+
+

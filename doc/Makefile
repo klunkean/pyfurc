@@ -3,10 +3,13 @@
 
 # You can set these variables from the command line, and also
 # from the environment for the first two.
-SPHINXOPTS    ?=
+SPHINXOPTS    ?= -aE
 SPHINXBUILD   ?= sphinx-build
+SPHINXAPIDOC  = sphinx-apidoc
 SOURCEDIR     = source
+APIDIR 		  = source/api
 BUILDDIR      = build
+MODULEPATH    = ../pyfurc
 
 # Put it first so that "make" without argument is like "make help".
 help:
@@ -19,6 +22,10 @@ help:
 %: Makefile
 	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
 
+api:
+	@$(SPHINXAPIDOC) -MTf -o $(APIDIR) $(MODULEPATH)
+	python $(APIDIR)/mod_api_doc.py
+
 all:
+	@make api
 	@make html
-	@cp -a build/html/. ../docs

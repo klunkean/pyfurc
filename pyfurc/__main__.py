@@ -1,5 +1,5 @@
 from ctypes import ArgumentError
-from pyfurc.tools import install_auto, write_conf
+from pyfurc.tools import AutoHelper, AutoInstaller
 import argparse
 import sys
 
@@ -18,7 +18,10 @@ if __name__=="__main__":
     elif len(sys.argv) == 1:
         parser.print_help()
 
+    
     if args.install_auto:
-        install_auto()
+        ai = AutoInstaller()
+        ai.install_auto()
     elif args.set_auto_dir:
-        write_conf()
+        ai = AutoInstaller()
+        ai.write_conf()

@@ -1,4 +1,3 @@
-
 from sympy import Symbol, Rational, nfloat
 from sympy import Expr as spexpr
 from sympy import sin as sp_sin
@@ -7,7 +6,6 @@ import os
 from subprocess import Popen, PIPE
 from warnings import warn
 from appdirs import AppDirs
-import configparser
 
 from pyfurc.util import (
     AutoCodePrinter,
@@ -15,7 +13,7 @@ from pyfurc.util import (
     ParamDict,
     AutoOutputReader,
 )
-from pyfurc.tools import get_conf_path
+from pyfurc.tools import AutoHelper
 
 
 class PhysicalQuantity(Symbol):
@@ -25,7 +23,7 @@ class PhysicalQuantity(Symbol):
     ----------
     name : str
         The name that will be displayed in outputs. When working
-        in a jupyter notebook, LaTeX symbols can be used, e.g.
+        in a jupyter notebook, LaTeX symbols can be displayed, e.g.
         ``\\varphi``.
     quantity_type : str, optional
         One of ``load``, ``dof``, or ``parameter``, by default ``parameter``
@@ -33,10 +31,17 @@ class PhysicalQuantity(Symbol):
         Initial value if `quantity_type` is `load` or `dof`.
         Value if `quantity_type` is `parameter`.
         Default is 0.0.
+    
+    Example
+    -------
+    Define a degree of freedom with an initial value of 1.0 and a display name "\\\\varphi":
+        
+        .. code-block:: python
+
+            phi = PhysicalQuantity("\\\\varphi", quantity_type="dof", value=1.0)
     """
 
-    def __new__(
-        cls, name, quantity_type="parameter", value=0.0):
+    def __new__(cls, name, quantity_type="parameter", value=0.0):
         obj = super().__new__(cls, name)
         possible_quantity_types = ["load", "dof", "parameter"]
         if quantity_type.lower() not in possible_quantity_types:
@@ -49,20 +54,14 @@ class PhysicalQuantity(Symbol):
         obj.value = value
         return obj
 
-    # def __init__(self, name, quantity_type="parameter", value=0.0):
-    #     super().__init__()
-    #     possible_quantity_types = ["load", "dof", "parameter"]
-    #     if quantity_type.lower() not in possible_quantity_types:
-    #         raise ValueError(
-    #             "quantity_type has to be one of: "
-    #             + ", ".join(possible_quantity_types)
-    #         )
-    #     self._name = None
-    #     self.quantity_type = quantity_type.lower()
-    #     self.value = value
-
-
 class Energy(spexpr):
+    """Container class for energy expressions.
+
+    Parameters
+    ----------
+    expr : valid sympy Expression e.g. ``sympy.Mul`` or ``sympy.Add`` containing exactly one `pyfurc.core.PhysicalQuantity` with ``quantity_type="load"``
+        
+    """
     def __init__(self, expr):
         self.expr = expr
         self.dofs = {}
@@ -169,6 +168,26 @@ class Energy(spexpr):
 
 
 class BifurcationProblem:
+    """Class for holding information on a bifurcation problem.
+
+    Objects of this class are defined by their :class:`pyfurc.core.Energy` expression and their ``name``. 
+    Upon instantiation a :class:`pyfurc.core.ParamDict` is created that holds default values for the calculations in AUTO-07p.
+
+    Parameters
+    ----------
+    energy : :class:`pyfurc.core.Energy`
+        The energy of the system containing at least one dof and one load.
+    name : str, optional
+        Name of the bifurcation problem. The calculation output folder will contain this name.
+
+
+    Variables
+    ---------
+    :ivar pyfurc.core.Energy energy: The energy expression passed on instantiation.
+    :ivar dict dofs: Reference to ``energy.dofs``, dictionary holding ``dof`` names and values. 
+    :ivar pyfurc.util.Paramdict problem_parameters: AUTO-7p calculation parameters.
+    :ivar str problem_name: Name of the bifurcation problem passed on instantiation. The calculation output folder will contain this name.
+    """
     def __init__(self, energy, name="pyfurc_problem"):
         self.energy = energy
         self.dofs = energy.dofs
@@ -218,7 +237,6 @@ class BifurcationProblem:
         )
 
         self._f_printer = AutoCodePrinter()
-        
 
     def set_parameter(self, param, value):
         other = False
@@ -250,11 +268,16 @@ class BifurcationProblem:
             raise KeyError("Unknown key " + param)
 
     def set_quantity_value(self, param, value):
-        self.energy.set_quantity_value(param, value)
+        """Set values for a :class:`pyfurc.core.PhysicalQuantity`. Shortcut for ``self.energy.set_quantity_value``
 
-    def print_parameters(self):
-        print(self.problem_parameters)
-        # print(self._other_parameters)
+        Parameters
+        ----------
+        param : :class:`pyfurc.core.PhysicalQuantity`
+            The quantity with the value to be changed. 
+        value : float
+            The value.
+        """
+        self.energy.set_quantity_value(param, value)
 
     def _fortran_equilibriums(self):
         equis = self.energy.equilibrium()
@@ -273,25 +296,7 @@ class BifurcationProblemSolver:
         self.problem = bf_problem
         self._f_printer = AutoCodePrinter()
         self._f_ind = "  "
-        self._auto_setup()
-
-    def _auto_setup(self):
-        conf_file_path = get_conf_path()
-        config = configparser.ConfigParser()
-        config.read_file(open(conf_file_path))
-        self.auto_dir = config["pyfurc"]["AUTO_DIR"]
-
-        self._env = os.environ.copy()
-        self._env["AUTO_DIR"] = self.auto_dir
-        with open(
-            os.path.join(self.auto_dir, "cmds", "auto.env.sh"), "r"
-        ) as envf:
-            for line in envf.readlines():
-                if line.startswith("PATH"):
-                    extend = line.split("=")[-1].rstrip()
-                    extend = extend.replace("$AUTO_DIR", self.auto_dir)
-                    newpath = self._env["PATH"] + f":{extend}"
-                    self._env["PATH"] = newpath
+        self.ah = AutoHelper()
 
     def _f_func(self):
         eq_exprs = self.problem._fortran_equilibriums()
@@ -440,7 +445,9 @@ class BifurcationProblemSolver:
         return code
 
     def write_func_file(self, basedir="./", silent=False):
-        fname = os.path.join(basedir, self.problem.problem_name + ".f90")
+        fname = os.path.join(
+            basedir, self.problem.problem_name + ".f90"
+        )
         code = self._f_func() + "\n\n"
         code += self._f_stpnt() + "\n\n"
         code += self._f_bcnd() + "\n\n"
@@ -480,6 +487,7 @@ class BifurcationProblemSolver:
     def run_auto(self, dirc):
         print("Running AUTO on problem " + self.problem.problem_name)
         print("-" * 72)
+        env = self.ah.setup_auto_exec_env()
         command = ["@r", self.problem.problem_name]
         process = Popen(
             command,
@@ -488,7 +496,7 @@ class BifurcationProblemSolver:
             cwd=dirc,
             bufsize=1,
             universal_newlines=True,
-            env=self._env,
+            env=env,
         )
         out, err = process.communicate()
         print(out)
