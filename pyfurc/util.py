@@ -71,6 +71,47 @@ class ParamDict(dict):
             out += "{:s}\t: {:s}\n".format(name, str(val))
         return out
 
+class AutoParameters(ParamDict):
+    def __init__(self):
+        default_parameters = {
+                "NTST": 50,
+                "IAD": 3,
+                "EPSL": 1e-7,
+                "EPSU": 1e-7,
+                "EPSS": 1e-5,
+                "ITMX": 8,
+                "ITNW": 5,
+                "DS": 0.1,
+                "DSMIN": 1e-3,
+                "DSMAX": 0.2,
+                "IADS": 1,
+                "STOP": "[]",
+                "NMX": 200,
+                "RL0": 0.0,
+                "RL1": 0.0,
+                "MXBF": 10,
+                "NPR": 200,
+                "IID": 2,
+                "IPLT": 0,
+                "UZR": "{}",
+                "UZSTOP": "{}",
+            }
+        self.update(default_parameters)
+
+class HiddenAutoParameters(ParamDict):
+    def __init__(self):
+        default_parameters = {
+                "NBC": 0,
+                "NINT": 0,
+                "JAC": 0,
+                "ICP": [1],
+                "ILP": 0,
+                "ISP": 1,
+                "IRS": 0,
+                "IPS": 0,
+            }
+
+        self.update(default_parameters)
 
 class AutoOutputReader(object):
     def __init__(self, dirc):

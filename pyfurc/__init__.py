@@ -19,6 +19,8 @@ from pyfurc.util import (
     AutoCodePrinter,
     DataDir,
     ParamDict,
+    AutoParameters,
+    HiddenAutoParameters,
     AutoOutputReader,
 )
 

@@ -3,7 +3,7 @@ import pyfurc as pf
 import sympy as sp
 
 @pytest.fixture()
-def bf_problem():
+def symmetric_bifurcation_problem():
     """Standard BifurcationProblem fixture for testing. Uses hinged cantilever, i.e. symmetric bifurcation with normalized parameters.
     """
     phi = pf.PhysicalQuantity("\\varphi", quantity_type="DOF")

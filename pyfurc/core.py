@@ -3,6 +3,7 @@ from sympy import Expr as spexpr
 from sympy import sin as sp_sin
 from sympy import pi as sp_pi
 import os
+import shutil
 from subprocess import Popen, PIPE
 from warnings import warn
 from appdirs import AppDirs
@@ -10,8 +11,9 @@ from appdirs import AppDirs
 from pyfurc.util import (
     AutoCodePrinter,
     DataDir,
-    ParamDict,
     AutoOutputReader,
+    AutoParameters,
+    HiddenAutoParameters,
 )
 from pyfurc.tools import AutoHelper
 
@@ -31,11 +33,11 @@ class PhysicalQuantity(Symbol):
         Initial value if `quantity_type` is `load` or `dof`.
         Value if `quantity_type` is `parameter`.
         Default is 0.0.
-    
+
     Example
     -------
     Define a degree of freedom with an initial value of 1.0 and a display name "\\\\varphi":
-        
+
         .. code-block:: python
 
             phi = PhysicalQuantity("\\\\varphi", quantity_type="dof", value=1.0)
@@ -54,14 +56,16 @@ class PhysicalQuantity(Symbol):
         obj.value = value
         return obj
 
+
 class Energy(spexpr):
     """Container class for energy expressions.
 
     Parameters
     ----------
     expr : valid sympy Expression e.g. ``sympy.Mul`` or ``sympy.Add`` containing exactly one `pyfurc.core.PhysicalQuantity` with ``quantity_type="load"``
-        
+
     """
+
     def __init__(self, expr):
         self.expr = expr
         self.dofs = {}
@@ -170,7 +174,7 @@ class Energy(spexpr):
 class BifurcationProblem:
     """Class for holding information on a bifurcation problem.
 
-    Objects of this class are defined by their :class:`pyfurc.core.Energy` expression and their ``name``. 
+    Objects of this class are defined by their :class:`pyfurc.core.Energy` expression and their ``name``.
     Upon instantiation a :class:`pyfurc.core.ParamDict` is created that holds default values for the calculations in AUTO-07p.
 
     Parameters
@@ -184,55 +188,25 @@ class BifurcationProblem:
     Variables
     ---------
     :ivar pyfurc.core.Energy energy: The energy expression passed on instantiation.
-    :ivar dict dofs: Reference to ``energy.dofs``, dictionary holding ``dof`` names and values. 
-    :ivar pyfurc.util.Paramdict problem_parameters: AUTO-7p calculation parameters.
+    :ivar dict dofs: Reference to ``energy.dofs``, dictionary holding ``dof`` names and values.
+    :ivar pyfurc.util.ProblemParameters problem_parameters: AUTO-7p calculation parameters.
     :ivar str problem_name: Name of the bifurcation problem passed on instantiation. The calculation output folder will contain this name.
     """
-    def __init__(self, energy, name="pyfurc_problem"):
+
+    def __init__(self, energy, name="pyfurc_problem", params=None):
         self.energy = energy
         self.dofs = energy.dofs
         self._solved = False
         self.problem_name = name
-        self.problem_parameters = ParamDict()
-        self.problem_parameters.update(
-            {
-                "NTST": 50,
-                "IAD": 3,
-                "EPSL": 1e-7,
-                "EPSU": 1e-7,
-                "EPSS": 1e-5,
-                "ITMX": 8,
-                "ITNW": 5,
-                "DS": 0.1,
-                "DSMIN": 1e-3,
-                "DSMAX": 0.2,
-                "IADS": 1,
-                "STOP": "[]",
-                "NMX": 200,
-                "RL0": 0.0,
-                "RL1": 0.0,
-                "MXBF": 10,
-                "NPR": 200,
-                "IID": 2,
-                "IPLT": 0,
-                "UZR": "{}",
-                "UZSTOP": "{}",
-            }
-        )
+        self.problem_parameters = AutoParameters()
+        if params is not None:
+            self.problem_parameters.update(params)
 
-        self._other_parameters = ParamDict()
+        self._other_parameters = HiddenAutoParameters()
         self._other_parameters.update(
             {
                 "NDIM": self.energy.ndofs,
                 "NPAR": self.energy.nparams + 1,
-                "NBC": 0,
-                "NINT": 0,
-                "JAC": 0,
-                "ICP": [1],
-                "ILP": 0,
-                "ISP": 1,
-                "IRS": 0,
-                "IPS": 0,
             }
         )
 
@@ -273,7 +247,7 @@ class BifurcationProblem:
         Parameters
         ----------
         param : :class:`pyfurc.core.PhysicalQuantity`
-            The quantity with the value to be changed. 
+            The quantity with the value to be changed.
         value : float
             The value.
         """
@@ -502,6 +476,9 @@ class BifurcationProblemSolver:
         print(out)
         print(err)
         print("-" * 72)
+
+    def delete_last_solution(self):
+        shutil.rmtree(self.solution_dir)
 
 
 class BifurcationProblemSolution:
