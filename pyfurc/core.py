@@ -23,7 +23,7 @@ class PhysicalQuantity(Symbol):
     ----------
     name : str
         The name that will be displayed in outputs. When working
-        in a jupyter notebook, LaTeX symbols can be used, e.g.
+        in a jupyter notebook, LaTeX symbols can be displayed, e.g.
         ``\\varphi``.
     quantity_type : str, optional
         One of ``load``, ``dof``, or ``parameter``, by default ``parameter``
@@ -34,11 +34,11 @@ class PhysicalQuantity(Symbol):
     
     Example
     -------
-    Define a degree of freedom with an initial value of 1.0
+    Define a degree of freedom with an initial value of 1.0 and a display name "\\\\varphi":
         
         .. code-block:: python
 
-            phi = PhysicalQuantity("\\varphi", quantity_type="dof", value=1.0)
+            phi = PhysicalQuantity("\\\\varphi", quantity_type="dof", value=1.0)
     """
 
     def __new__(cls, name, quantity_type="parameter", value=0.0):
@@ -168,6 +168,26 @@ class Energy(spexpr):
 
 
 class BifurcationProblem:
+    """Class for holding information on a bifurcation problem.
+
+    Objects of this class are defined by their :class:`pyfurc.core.Energy` expression and their ``name``. 
+    Upon instantiation a :class:`pyfurc.core.ParamDict` is created that holds default values for the calculations in AUTO-07p.
+
+    Parameters
+    ----------
+    energy : :class:`pyfurc.core.Energy`
+        The energy of the system containing at least one dof and one load.
+    name : str, optional
+        Name of the bifurcation problem. The calculation output folder will contain this name.
+
+
+    Variables
+    ---------
+    :ivar pyfurc.core.Energy energy: The energy expression passed on instantiation.
+    :ivar dict dofs: Reference to ``energy.dofs``, dictionary holding ``dof`` names and values. 
+    :ivar pyfurc.util.Paramdict problem_parameters: AUTO-7p calculation parameters.
+    :ivar str problem_name: Name of the bifurcation problem passed on instantiation. The calculation output folder will contain this name.
+    """
     def __init__(self, energy, name="pyfurc_problem"):
         self.energy = energy
         self.dofs = energy.dofs
@@ -248,11 +268,16 @@ class BifurcationProblem:
             raise KeyError("Unknown key " + param)
 
     def set_quantity_value(self, param, value):
-        self.energy.set_quantity_value(param, value)
+        """Set values for a :class:`pyfurc.core.PhysicalQuantity`. Shortcut for ``self.energy.set_quantity_value``
 
-    def print_parameters(self):
-        print(self.problem_parameters)
-        # print(self._other_parameters)
+        Parameters
+        ----------
+        param : :class:`pyfurc.core.PhysicalQuantity`
+            The quantity with the value to be changed. 
+        value : float
+            The value.
+        """
+        self.energy.set_quantity_value(param, value)
 
     def _fortran_equilibriums(self):
         equis = self.energy.equilibrium()
