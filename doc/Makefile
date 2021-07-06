@@ -29,4 +29,3 @@ api:
 all:
 	@make api
 	@make html
-	@cp -a build/html/. ../docs
