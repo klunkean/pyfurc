@@ -277,7 +277,9 @@ class BifurcationProblem:
             raise KeyError("Unknown key " + param)
 
     def set_quantity_value(self, param, value):
-        """Set values for a :class:`pyfurc.core.PhysicalQuantity`. Shortcut for ``self.energy.set_quantity_value``
+        """Set values for a :class:`pyfurc.core.PhysicalQuantity` which
+        is contained in the ``BifurcationProblem.energy`` expression.
+        Shortcut for ``BifurcationProblem.energy.set_quantity_value``.
 
         Parameters
         ----------
