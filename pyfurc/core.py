@@ -31,6 +31,14 @@ class PhysicalQuantity(Symbol):
         Initial value if `quantity_type` is `load` or `dof`.
         Value if `quantity_type` is `parameter`.
         Default is 0.0.
+    
+    Example
+    -------
+    Define a degree of freedom with an initial value of 1.0
+        
+        .. code-block:: python
+
+            phi = PhysicalQuantity("\\varphi", quantity_type="dof", value=1.0)
     """
 
     def __new__(cls, name, quantity_type="parameter", value=0.0):
