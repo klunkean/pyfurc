@@ -184,12 +184,14 @@ class BifurcationProblem:
     energy : :class:`pyfurc.core.Energy`
         The energy of the system containing at least one dof and one load.
     name : str, optional
-        Name of the bifurcation problem. The calculation output folder will contain this name.
+        Name of the bifurcation problem. The calculation output folder 
+        will contain this name and a timestamp.
 
 
     Variables
     ---------
-    :ivar pyfurc.core.Energy energy: The energy expression passed on instantiation.
+    :ivar pyfurc.core.Energy energy: The energy expression passed on 
+    instantiation.
     :ivar dict dofs: Reference to ``energy.dofs``, dictionary holding ``dof`` names and values.
     :ivar pyfurc.util.ProblemParameters problem_parameters: AUTO-7p calculation parameters.
     :ivar str problem_name: Name of the bifurcation problem passed on instantiation. The calculation output folder will contain this name.

@@ -1,6 +1,5 @@
 from sympy.printing.fortran import FCodePrinter
-from time import localtime
-from datetime import date
+from datetime import datetime as dt
 from os import system, path
 from pandas import read_csv
 
@@ -29,19 +28,7 @@ class AutoCodePrinter(FCodePrinter):
 
 class DataDir(object):
     def __init__(self, base_dir="./", name=""):
-        self.date = date.today()
-        self.time = localtime()
-        self.date_time = "".join(
-            [
-                str(self.date.year),
-                str(self.date.month),
-                str(self.date.day),
-                "_",
-                "{:02.0f}".format(self.time[3]),
-                "{:02.0f}".format(self.time[4]),
-                "{:02.0f}".format(self.time[5]),
-            ]
-        )
+        self.date_time = dt.now().strftime(r"%Y%m%d_%H%M%S")
         self.directory = "".join([base_dir + name + "_", self.date_time, "/"])
         self.codedir = self.directory + "code/"
         self.dirCreated = False
