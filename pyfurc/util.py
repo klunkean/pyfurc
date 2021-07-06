@@ -72,6 +72,82 @@ class ParamDict(dict):
         return out
 
 class AutoParameters(ParamDict):
+    """Dictionary holding the AUTO-07p calculation parameters.
+    Upon instantiation default values will be set. 
+    
+    The following table gives a list of parameter names and their default
+    values. The short explanations are taken from the 
+    `AUTO-07p manual <https://depts.washington.edu/bdecon/workshop2012/auto-tutorial/documentation/auto07p%20manual.pdf>`_.
+    Please refer to the AUTO-07p manual for more detailed explanations.
+
+    ========= ======= ===========
+    Parameter Default Explanation
+    ========= ======= ===========
+    NTST      50      The number of mesh intervals used for discretization.
+    IAD       3       This constant controls the mesh adaption. 
+                      ``IAD=3`` is the strongly recommended value.
+    EPSL      1e-07   Relative convergence criterion for equation 
+                      parameters in the Newton/Chord method. 
+                      Recommended value range: ``10E-7`` to ``10E-6``.
+    EPSU      1e-07   Relative convergence criterion for solution 
+                      components in the Newton/Chord method. 
+                      Recommended value range: ``10E-7`` to ``10E-6``.
+    EPSS      1e-05   Relative arclength convergence criterion for the 
+                      detection of special solutions. Recommended value 
+                      range: ``10E-5`` to ``10E-4``. Generally, ``EPSS`` 
+                      should be approximately 100 to 1000 times the value 
+                      of ``EPSL``, ``EPSU``.
+    ITMX      8       The maximum number of iterations allowed in the 
+                      accurate location of special solutions, such as 
+                      bifurcations, folds, and user output points, 
+                      by Müller’s method with bracketing. The recommended 
+                      value is ``ITMX=8``
+    ITNW      5       The maximum number of combined Newton-Chord 
+                      iterations. When this maximum is reached, the step 
+                      will be retried with half the stepsize. The 
+                      recommended value is ``ITNW=5``, but ``ITNW=7`` may 
+                      be used for “difficult” problems
+    DS        0.1     Pseudo-arclength stepsize to be used for the first 
+                      attempted step along any family. 
+                      ``DSMIN`` ≤ | ``DS`` | ≤ ``DSMAX`` must hold.
+    DSMIN     0.001   Minimum allowable absolute value of the 
+                      pseudo-arclength stepsize.
+    DSMAX     0.2     Maximum allowable absolute value of the 
+                      pseudo-arclength stepsize.    
+    IADS      1       This constant controls the frequency of adaption of 
+                      the pseudo-arclength stepsize.
+
+                            - ``IADS=0``: fixed pseudo-arclength stepsize ``DS``.
+                            - ``IADS>0``: Adapt the pseudo-arclength stepsize after every ``IADS`` steps.
+    STOP      []      This constant adds stopping conditions
+    NMX       200     The maximum number of steps to be taken along any 
+                      family.
+    RL0       0.0     The lower bound on the principal continuation 
+                      parameter. Typically this will be the load.
+    RL1       0.0     The upper bound on the principal continuation 
+                      parameter.
+    MXBF      10      Maximum number of bifurcations to be treated.
+    NPR       200     This constant can be used to regularly write 
+                      ``fort.8`` plotting and restart data. IF ``NPR>0`` 
+                      then such output is written every ``NPR`` steps. 
+                      If ``NPR=0`` or if ``NPR``≥``NMX`` then no such 
+                      output is written.
+    IID       2       This constant controls the amount of diagnostic 
+                      output printed in ``fort.9``. See the AUTO-07p manual
+                      for details.
+    IPLT      0       This constant allows redefinition of the principal 
+                      solution measure, i.e. the error norm. See the 
+                      AUTO-07p manual for details.
+    UZR       {}      This constant allows the setting of parameter values 
+                      which labeled plotting and restart information is to 
+                      be written in the ``fort.8`` output-file. See the 
+                      AUTO-07p manual for details.
+    UZSTOP    {}      This constant specifies parameter values in the same 
+                      way as ``UZR`` above, but the computation will always
+                      terminate if any solution point that is specified is
+                      encountered.
+    ========= ======= ===========
+    """
     def __init__(self):
         default_parameters = {
                 "NTST": 50,
