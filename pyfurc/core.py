@@ -269,7 +269,7 @@ class BifurcationProblem:
                         "Parameter "
                         + param
                         + " must be of type "
-                        + default_type
+                        + str(default_type)
                     )
             dict_to_change[param] = value
 
