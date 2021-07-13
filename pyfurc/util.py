@@ -106,6 +106,11 @@ class AutoParameters(ParamDict):
 
                             - ``IADS=0``: fixed pseudo-arclength stepsize ``DS``.
                             - ``IADS>0``: Adapt the pseudo-arclength stepsize after every ``IADS`` steps.
+    ICP       [1]     For each equation type and for each continuation 
+                      calculation there is a typical (“ge
+                      The array ICP designates these free parameters. 
+                      The parameter that appears first in the ICP list 
+                      is called the “principal continuation parameter”.
     STOP      []      This constant adds stopping conditions
     NMX       200     The maximum number of steps to be taken along any 
                       family.
@@ -148,6 +153,7 @@ class AutoParameters(ParamDict):
                 "DSMIN": 1e-3,
                 "DSMAX": 0.2,
                 "IADS": 1,
+                "ICP": [1],
                 "STOP": "[]",
                 "NMX": 200,
                 "RL0": 0.0,
@@ -167,7 +173,6 @@ class HiddenAutoParameters(ParamDict):
                 "NBC": 0,
                 "NINT": 0,
                 "JAC": 0,
-                "ICP": [1],
                 "ILP": 0,
                 "ISP": 1,
                 "IRS": 0,
