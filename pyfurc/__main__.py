@@ -5,6 +5,7 @@ import sys
 
 
 if __name__ == "__main__":
+    print("Running __main__")
     parser = argparse.ArgumentParser(description="pyfurc setup helpers")
     parser.add_argument(
         "-i",
@@ -33,6 +34,7 @@ if __name__ == "__main__":
     if args.install_auto:
         if args.set_auto_dir:
             raise ArgumentError("--set-auto-dir has to be used separately.")
+        print("Starting AUTO-07p installation script...")
         ai = AutoInstaller()
         ai.install_auto(fast_forward = args.use_default)
 
