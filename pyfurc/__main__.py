@@ -14,7 +14,7 @@ if __name__ == "__main__":
         action="store_true",
     )
     parser.add_argument(
-        "--use-default",
+        "--use-defaults",
         help=(
             "Deactivate user feedback during installation and "
             "use default choices for all options."
@@ -36,10 +36,10 @@ if __name__ == "__main__":
             raise ArgumentError("--set-auto-dir has to be used separately.")
         print("Starting AUTO-07p installation script...")
         ai = AutoInstaller()
-        ai.install_auto(fast_forward = args.use_default)
+        ai.install_auto(fast_forward = args.use_defaults)
 
     elif args.set_auto_dir:
-        if args.use_default:
+        if args.use_defaults:
             print("--use-default can only be used with --install-auto. ",
              "Ignoring.")
         ai = AutoInstaller()
