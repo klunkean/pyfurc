@@ -26,6 +26,7 @@ jobs:
       run: poetry install
     - name: Install AUTO-07p.
       run: poetry run python -m pyfurc --install-auto --use-default
+      timeout-minutes: 1
     # - name: Lint with flake8
     #   run: |
     #     # stop the build if there are Python syntax errors or undefined names
