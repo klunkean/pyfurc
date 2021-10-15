@@ -17,6 +17,7 @@ class AutoHelper:
 
     def get_conf_path(self):
         dirs = AppDirs("pyfurc", "klunkean")
+        # TODO: Switch to platformdirs
         user_dir = dirs.user_data_dir
         conf_name = "pyfurc.conf"
         conf_file_path = os.path.join(user_dir, conf_name)
