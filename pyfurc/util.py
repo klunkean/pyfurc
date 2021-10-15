@@ -187,6 +187,7 @@ class AutoOutputReader(object):
         self.outfile7 = os.path.join(self.dirc, "fort.7")
 
     def read_raw_data(self):
+        #TODO Rewrite without pandas (Big chunky bloaty module for reading csv)
         line_numbers = self.find_table_lines()
         data = []
         for lines in line_numbers:
