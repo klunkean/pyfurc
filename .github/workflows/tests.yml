@@ -19,7 +19,7 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
     - name: Print Stuff with Python
-      run: python -c "print("python output without poetry")"
+      run: python -c "print('python output without poetry')"
     - name: Install poetry
       uses: abatilo/actions-poetry@v2.0.0
       with:
@@ -27,7 +27,7 @@ jobs:
     - name: Install package with poetry
       run: poetry install
     - name: Print stuff with poetry
-      run: poetry run python -c "print("python output with poetry")"
+      run: poetry run python -c "print('python output with poetry')"
     # - name: Install AUTO-07p.
     #   run: poetry run python -m pyfurc --install-auto --use-defaults
     #   timeout-minutes: 1
