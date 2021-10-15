@@ -19,6 +19,7 @@ from pyfurc.tools import AutoHelper
 
 
 class PhysicalQuantity(Symbol):
+    # TODO: Rewrite with classes Dof, Load, Constant
     """Fundamental class for degrees of freedom and loads.
 
     Parameters
