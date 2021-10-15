@@ -14,6 +14,7 @@ class AutoHelper:
 
     This class is not intended to be used.
     """
+
     def get_conf_path(self):
         dirs = AppDirs("pyfurc", "klunkean")
         user_dir = dirs.user_data_dir
@@ -50,6 +51,7 @@ class AutoInstaller:
 
     This class is not intended to be used. The install script is called when running ``python -m pyfurc --install-auto``
     """
+
     def __init__(self):
         self.ah = AutoHelper()
 
@@ -132,7 +134,7 @@ class AutoInstaller:
 
         return self.run_sh_with_output(command, auto_dir)
 
-    def run_make_clean(self,auto_dir):
+    def run_make_clean(self, auto_dir):
         command = ["make", "clean"]
 
         return self.run_sh_with_output(command, auto_dir)
@@ -157,7 +159,7 @@ class AutoInstaller:
         except FileNotFoundError:
             return -1
 
-    def install_auto(self):
+    def install_auto(self, fast_forward=False):
         try:
             readline.set_completer_delims(" \t\n=")
             readline.parse_and_bind("tab: complete")
@@ -211,7 +213,9 @@ class AutoInstaller:
                         print(
                             "Downloading AUTO-07p archive from github..."
                         )
-                        auto_archive_path = self.get_auto_archive(home_dir)
+                        auto_archive_path = self.get_auto_archive(
+                            home_dir
+                        )
                         print("Done.\n")
                         state = "extract_archive_prep"
                     except:
@@ -233,9 +237,13 @@ class AutoInstaller:
                     default_auto_dir = self.get_default_auto_dir()
                     while not target_done:
                         # Select installation directory
-                        use_default = input(
-                            f"Use default install directory ({default_install_dir}) ([y]/n)? "
-                        )
+                        if not fast_forward:
+                            use_default = input(
+                                f"Use default install directory ({default_install_dir}) ([y]/n)? "
+                            )
+                        else:
+                            use_default = "y"
+
                         if use_default.lower() in ["y", ""]:
                             target_dir = default_install_dir
                             target_done = True
@@ -259,12 +267,15 @@ class AutoInstaller:
                         # selected directory does not exist, create?
                         target_dir_does_not_exist_done = False
                         while not target_dir_does_not_exist_done:
-                            create = input(
-                                (
-                                    f"Target directory {target_dir} does not exist. "
-                                    "Try to create? ([y]/n) "
+                            if not fast_forward:
+                                create = input(
+                                    (
+                                        f"Target directory {target_dir} does not exist. "
+                                        "Try to create? ([y]/n) "
+                                    )
                                 )
-                            )
+                            else:
+                                create = "y"
                             if create.lower() in ["y", ""]:
                                 create_dir = True
                                 target_dir_does_not_exist_done = True
@@ -279,10 +290,13 @@ class AutoInstaller:
                     elif os.path.exists(auto_dir):
                         overwrite_done = False
                         while not overwrite_done:
-                            overwrite = input(
-                                "auto-07p already present in target directory "
-                                "Overwrite? ([y]/n]) "
-                            )
+                            if not fast_forward:
+                                overwrite = input(
+                                    "auto-07p already present in target directory "
+                                    "Overwrite? ([y]/n]) "
+                                )
+                            else:
+                                overwrite = "y"
                             if overwrite.lower() in ["y", ""]:
                                 overwrite_done = True
                                 shutil.rmtree(auto_dir)
@@ -414,7 +428,10 @@ class AutoInstaller:
                             )
                             if auto_dir == "":
                                 auto_dir = default_dir
-                            code, output = self.check_if_auto_dir_is_valid(
+                            (
+                                code,
+                                output,
+                            ) = self.check_if_auto_dir_is_valid(
                                 auto_dir
                             )
                             if code == 0:
