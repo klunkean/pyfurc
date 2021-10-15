@@ -77,3 +77,19 @@ install AUTO-07p:
     python3 -m pyfurc --install-auto
 
 This will download and configure AUTO-07p on your machine.
+
+Additional sugestion: jupyter notebook
+++++++++++++++++++++++++++++++++++++++
+
+Users without much experience in programming may find it more comfortable to 
+program in a `jupyter notebook <https://jupyter.org/>`_. 
+
+One way to install it is using ``pip``:
+
+.. code-block:: bash
+
+    pip install notebook
+
+Then, take a look at 
+`this guide <https://jupyter.readthedocs.io/en/latest/running.html#running>`_ 
+to get started with jupyter notebook.
