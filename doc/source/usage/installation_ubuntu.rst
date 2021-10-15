@@ -52,8 +52,8 @@ pyfurc.
 Installing pyfurc with pip
 --------------------------
 
-Installing the python package
-+++++++++++++++++++++++++++++
+Installing the pyfurc python package
+++++++++++++++++++++++++++++++++++++
 
 First, open a terminal **in your home directory** (see above), or use the
 one you may have just used to install pip.
@@ -65,3 +65,15 @@ Enter the following line
     pip3 install pyfurc
 
 and pyfurc will be installed along with all its dependencies.
+
+Installing AUTO-07p with pyfurc
++++++++++++++++++++++++++++++++
+
+Once pyfurc is installed we run the provided installation script to 
+install AUTO-07p:
+
+.. code-block:: bash
+
+    python3 -m pyfurc --install-auto
+
+This will download and configure AUTO-07p on your machine.

@@ -50,8 +50,8 @@ Solving a bifurcation problem can be this simple:
    for dat in bf.solution.raw_data:
       plt.plot(dat["U(1)"], dat["PAR(1)"])
 
-To get started, check out the Quickstart section below or check the 
-in-depth guides in the :ref:`Table of Contents <contents>`.
+To get started, check out the Quickstart section below or see the 
+:ref:`in-depth user guide<User Guide>`.
 
 Quickstart
 ++++++++++
@@ -82,7 +82,7 @@ Contents
 ++++++++
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
 
    usage/index
    develop/dev_basics
