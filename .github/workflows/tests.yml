@@ -26,10 +26,10 @@ jobs:
       run: poetry build -nf wheel
     - name: Install wheel with pip
       run: pip install --no-input dist/*.whl
-    - name: Try importing pyfurc
-      run: python -vc "import pyfurc"
-    # - name: Install AUTO-07p with script
-    #   run: python -vm pyfurc --install-auto --use-defaults
+    # - name: Try importing pyfurc
+    #   run: python -vc "import pyfurc"
+    - name: Install AUTO-07p with script
+      run: python -vm pyfurc --install-auto --use-defaults
     # - name: Install pytest
     #   run: pip install pytest
     # - name: Run pytest
