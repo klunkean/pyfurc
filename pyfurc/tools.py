@@ -396,6 +396,7 @@ class AutoInstaller:
                         f"environment file in {auto_dir}/cmds."
                     )
                     all_done = True
+
         except KeyboardInterrupt:
 
             print("\nInstallation manually aborted...")

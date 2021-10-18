@@ -34,7 +34,7 @@ if __name__ == "__main__":
 
     if args.install_auto:
         print("Starting AUTO-07p installation script...")
-        # ai = AutoInstaller()
+        ai = AutoInstaller()
         # ai.install_auto(fast_forward = args.use_defaults)
 
     elif args.set_auto_dir:
