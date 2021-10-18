@@ -26,6 +26,8 @@ jobs:
       run: poetry build -nf wheel
     - name: Install wheel with pip
       run: pip install --no-input dist/*.whl
+    - name: Install AUTO-07p with script
+      run: python -m pyfurc --install-auto --use-defaults
     - name: Install pytest
       run: pip install pytest
     - name: Run pytest
