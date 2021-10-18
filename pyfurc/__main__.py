@@ -5,7 +5,9 @@ import sys
 
 
 if __name__ == "__main__":
-    print("Running __main__")
+    print(72*"#"+"\n"
+        "running main"
+        "\n"+72*"#")
     parser = argparse.ArgumentParser(description="pyfurc setup helpers")
     group = parser.add_mutually_exclusive_group()
     group.add_argument(
@@ -35,7 +37,7 @@ if __name__ == "__main__":
     if args.install_auto:
         print("Starting AUTO-07p installation script...")
         ai = AutoInstaller()
-        # ai.install_auto(fast_forward = args.use_defaults)
+        ai.install_auto(fast_forward = args.use_defaults)
 
     elif args.set_auto_dir:
         if args.use_defaults:
