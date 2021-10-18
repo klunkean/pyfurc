@@ -29,7 +29,8 @@ jobs:
     # - name: Try importing pyfurc
     #   run: python -vc "import pyfurc"
     - name: Install AUTO-07p with script
-      run: python -vm pyfurc --install-auto --use-defaults
+      # run: python -vm pyfurc --install-auto --use-defaults
+      run: python -m pyfurc --help
     # - name: Install pytest
     #   run: pip install pytest
     # - name: Run pytest
