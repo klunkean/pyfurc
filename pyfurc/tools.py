@@ -161,12 +161,10 @@ class AutoInstaller:
             return -1
 
     def install_auto(self, fast_forward=False):
-        print(72 * "#" + "\n" "In install Auto before" "\n" + 72 * "#")
         try:
             readline.set_completer_delims(" \t\n=")
             readline.parse_and_bind("tab: complete")
             home_dir = os.getenv("HOME")
-            print(72 * "#" + "\n" "got homedir" "\n" + 72 * "#")
             all_done = False
 
             state_fun_dict = {
@@ -189,10 +187,6 @@ class AutoInstaller:
 
             state = "check_prerequisites"
             while not all_done:
-                print(
-                    72 * "#" + "\n" "Entered main loop" "\n" + 72 * "#"
-                )
-                print(72 * "#" + "\n" f"{state}" "\n" + 72 * "#")
                 if state == "check_prerequisites":
                     print("Checking for prerequisites...")
                     preqs = ["gfortran", "gcc", "make"]
