@@ -1,3 +1,5 @@
+![](https://img.shields.io/badge/python-3.8-blue)
+![](https://img.shields.io/github/workflow/status/klunkean/pyfurc/tests)
 # pyfurc
 This package enables energetic equilibrium calculations as encountered in mechanical stability problems using AUTO-07p from within python.
 
