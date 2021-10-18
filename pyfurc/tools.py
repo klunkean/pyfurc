@@ -196,6 +196,9 @@ class AutoInstaller:
                 print(72*"#"+"\n"
                 "Entered main loop"
                 "\n"+72*"#")
+                print(72*"#"+"\n"
+                f"{state}"
+                "\n"+72*"#")
                 if state == "check_prerequisites":
                     print("Checking for prerequisites...")
                     preqs = ["gfortran", "gcc", "make"]
