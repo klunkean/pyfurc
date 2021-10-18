@@ -27,7 +27,8 @@ jobs:
     - name: Install wheel with pip
       run: pip install --no-input dist/*.whl
     - name: Install AUTO-07p with script
-      run: python -vm pyfurc --install-auto --use-defaults
+      timeout-minutes: 1
+      run: python -m pyfurc --install-auto --use-defaults
 
       # run: python -m pyfurc --help
     # - name: Install pytest
