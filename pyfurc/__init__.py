@@ -1,12 +1,15 @@
 __author__ = "ak"
 __version__ = "0.1.6"
+print("Entering __init__")
 import os, configparser, warnings
 
+print("Import pyfurc.tools")
 from pyfurc.tools import (
     AutoInstaller,
     AutoHelper
 )
 
+print("Import pyfurc.core")
 from pyfurc.core import (
     PhysicalQuantity,
     Energy,
@@ -15,6 +18,7 @@ from pyfurc.core import (
     BifurcationProblemSolution,
 )
 
+print("Import pyfurc.util")
 from pyfurc.util import (
     AutoCodePrinter,
     DataDir,
@@ -24,9 +28,13 @@ from pyfurc.util import (
     AutoOutputReader,
 )
 
+print("Initializing Installer/Helper")
 ai = AutoInstaller()
 ah = AutoHelper()
+
+print("Checking config")
 conf_exists = ai.check_if_config_exists()
+print("Getting config path")
 conf_path = ah.get_conf_path()
 
 if not conf_exists:

@@ -1,4 +1,4 @@
-from ctypes import ArgumentError
+print("In main before imports")
 from pyfurc.tools import AutoHelper, AutoInstaller
 import argparse
 import sys
@@ -7,7 +7,8 @@ import sys
 if __name__ == "__main__":
     print("Running __main__")
     parser = argparse.ArgumentParser(description="pyfurc setup helpers")
-    parser.add_argument(
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument(
         "-i",
         "--install-auto",
         help="Run installation of AUTO-07p.",
@@ -22,7 +23,7 @@ if __name__ == "__main__":
         ),
         action="store_true",
     )
-    parser.add_argument(
+    group.add_argument(
         "--set-auto-dir",
         help="Write a new AUTO-07p directory to the pyfurc config file.",
         action="store_true",
@@ -32,8 +33,8 @@ if __name__ == "__main__":
         parser.print_help()
 
     if args.install_auto:
-        if args.set_auto_dir:
-            raise ArgumentError("--set-auto-dir has to be used separately.")
+        # if args.set_auto_dir:
+            # raise argparse.ArgumentError("--set-auto-dir has to be used separately.")
         print("Starting AUTO-07p installation script...")
         ai = AutoInstaller()
         ai.install_auto(fast_forward = args.use_defaults)
