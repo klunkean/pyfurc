@@ -33,11 +33,9 @@ if __name__ == "__main__":
         parser.print_help()
 
     if args.install_auto:
-        # if args.set_auto_dir:
-            # raise argparse.ArgumentError("--set-auto-dir has to be used separately.")
         print("Starting AUTO-07p installation script...")
-        ai = AutoInstaller()
-        ai.install_auto(fast_forward = args.use_defaults)
+        # ai = AutoInstaller()
+        # ai.install_auto(fast_forward = args.use_defaults)
 
     elif args.set_auto_dir:
         if args.use_defaults:
