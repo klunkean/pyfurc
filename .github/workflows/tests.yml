@@ -27,22 +27,8 @@ jobs:
     - name: Install wheel with pip
       run: pip install --no-input dist/*.whl
     - name: Install AUTO-07p with script
-      timeout-minutes: 1
       run: python -m pyfurc --install-auto --use-defaults
-
-      # run: python -m pyfurc --help
-    # - name: Install pytest
-    #   run: pip install pytest
-    # - name: Run pytest
-    #   run: pytest .
-    # - name: Install AUTO-07p.
-      # run: poetry run python -vm pyfurc --install-auto --use-defaults
-    # - name: Lint with flake8
-    #   run: |
-    #     # stop the build if there are Python syntax errors or undefined names
-    #     flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-    #     # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-    #     flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-    # - name: Run pytest
-    #   run: |
-    #     poetry run pytest
+    - name: Install pytest
+      run: pip install pytest
+    - name: Run pytest
+      run: pytest .
