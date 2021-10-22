@@ -33,5 +33,4 @@ __pycache__
 .pytest_cache/
 
 # dotenv
-.env
-
+.venv/
