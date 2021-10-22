@@ -1,37 +1,6 @@
-[tool.poetry]
-name = "pyfurc"
-version = "0.1.7"
-description = "AUTO-07p made accessible through python."
-authors = ["klunkean <klunkean@posteo.de>"]
-maintainers = ["klunkean <klunkean@posteo.de>"]
-license = "WTFPLv2"
-packages = [
-    { include = "pyfurc", from = "src" },
-]
-include = ["auto-07p", "scripts"]
-
-[tool.poetry.dependencies]
-python = "^3.8"
-numpy= "*"
-sympy= "*"
-pandas= "*"
-appdirs = "*"
-sphinx= "*"
-pydata-sphinx-theme= "*"
-
-[tool.poetry.dev-dependencies]
-pylint = "*"
-black = {version = "*", allow-prereleases = true, python = "^3.8"}
-bump2version = "*"
-pytest = "*"
-
 [build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
-
-[tool.poetry.urls]
-"Website" = "https://github.com/klunkean/pyfurc"
-"Documentation" = "https://pyfurc.readthedocs.io/"
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
 
 [tool.pytest.ini_options]
 minversion = "6.0"
