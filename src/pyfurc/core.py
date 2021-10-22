@@ -106,7 +106,7 @@ class Energy(spexpr):
         return str(self.expr)
 
     def info(self):
-        infostr = "Potential energy with {:d} DOF(s):\n".format(self.ndofs)
+        infostr = f"Potential energy with {self.ndofs:d} DOF(s):\n"
         infostr += str(self.expr) + "\n\n"
         infostr += "The DOFs are:\n"
         for dof, dofdict in self.dofs.items():
