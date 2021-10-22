@@ -1,0 +1,2 @@
+recursive-include auto-07p *
+recursive-include doc *
