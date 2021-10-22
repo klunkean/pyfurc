@@ -18,17 +18,13 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
-    - name: Install poetry
-      uses: abatilo/actions-poetry@v2.0.0
-      with:
-        poetry-version: ${{ matrix.poetry-version }}
-    - name: Build package wheel with poetry
-      run: poetry build -nf wheel
+    - name: Install dependencies frontend
+      run: python -m pip install build pytest
+    - name: Build package wheel with build
+      run: python -m build .
     - name: Install wheel with pip
-      run: pip install --no-input dist/*.whl
+      run: python -m pip install --no-input dist/*.whl
     - name: Install AUTO-07p with script
       run: python -m pyfurc --install-auto --use-defaults
-    - name: Install pytest
-      run: pip install pytest
     - name: Run pytest
       run: pytest .
