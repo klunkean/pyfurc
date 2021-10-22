@@ -5,6 +5,9 @@ description = "AUTO-07p made accessible through python."
 authors = ["klunkean <klunkean@posteo.de>"]
 maintainers = ["klunkean <klunkean@posteo.de>"]
 license = "WTFPLv2"
+packages = [
+    { include = "pyfurc", from = "src" },
+]
 
 [tool.poetry.dependencies]
 python = "^3.8"
