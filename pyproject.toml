@@ -8,6 +8,7 @@ license = "WTFPLv2"
 packages = [
     { include = "pyfurc", from = "src" },
 ]
+include = ["auto-07p", "scripts"]
 
 [tool.poetry.dependencies]
 python = "^3.8"
