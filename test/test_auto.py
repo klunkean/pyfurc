@@ -1,7 +1,9 @@
-import pytest
 import os
+from subprocess import PIPE, Popen
+
+import pytest
+
 import pyfurc as pf
-from subprocess import Popen, PIPE
 
 
 def test_conf_path():

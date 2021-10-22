@@ -1,7 +1,8 @@
 print("In main before imports")
-from pyfurc.tools import AutoHelper, AutoInstaller
 import argparse
 import sys
+
+from pyfurc.tools import AutoHelper, AutoInstaller
 
 
 def main():

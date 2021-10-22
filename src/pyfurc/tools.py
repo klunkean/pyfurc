@@ -1,11 +1,12 @@
-import subprocess
-import os
+import configparser as cp
 import glob
+import os
+import readline
 import shutil
+import subprocess
 import urllib.request
 from zipfile import ZipFile
-import readline
-import configparser as cp
+
 from appdirs import AppDirs
 
 
@@ -32,9 +33,7 @@ class AutoHelper:
 
         env = os.environ.copy()
         env["AUTO_DIR"] = auto_dir
-        with open(
-            os.path.join(auto_dir, "cmds", "auto.env.sh"), "r"
-        ) as envf:
+        with open(os.path.join(auto_dir, "cmds", "auto.env.sh")) as envf:
             for line in envf.readlines():
                 if line.startswith("PATH"):
                     extend = line.split("=")[-1].rstrip()
@@ -74,8 +73,7 @@ class AutoInstaller:
         env_path = os.path.join(auto_dir, "cmds/auto.env.sh")
         if not os.path.exists(env_path):
             out_str = (
-                f"Given auto directory {auto_dir} is invalid. "
-                "Check your config."
+                f"Given auto directory {auto_dir} is invalid. " "Check your config."
             )
             return -1, out_str
         else:
@@ -98,9 +96,7 @@ class AutoInstaller:
         path_to_auto_dir = os.path.join(zip_path, auto_dir_name)
 
         auto_dir_name = os.path.split(self.get_default_auto_dir())[-1]
-        os.rename(
-            path_to_auto_dir, os.path.join(target_dir, auto_dir_name)
-        )
+        os.rename(path_to_auto_dir, os.path.join(target_dir, auto_dir_name))
         return path_to_auto_dir
 
     def run_sh_with_output(self, command, directory):
@@ -142,7 +138,7 @@ class AutoInstaller:
 
     def set_up_env_for_sh(self, auto_dir):
         env_file = os.path.join(auto_dir, "cmds/auto.env.sh")
-        with open(env_file, "r") as ef:
+        with open(env_file) as ef:
             env_content = ef.read()
         env_content = env_content.replace(
             "AUTO_DIR=$HOME/auto/07p", f"AUTO_DIR={auto_dir}"
@@ -210,21 +206,15 @@ class AutoInstaller:
                 elif state == "download_archive":
                     # Get auto-archive from github
                     try:
-                        print(
-                            "Downloading AUTO-07p archive from github..."
-                        )
-                        auto_archive_path = self.get_auto_archive(
-                            home_dir
-                        )
+                        print("Downloading AUTO-07p archive from github...")
+                        auto_archive_path = self.get_auto_archive(home_dir)
                         print("Done.\n")
                         state = "extract_archive_prep"
                     except:
                         print(
-                            (
-                                "Something went wrong while trying "
-                                "to download AUTO-07p from github. \n"
-                                "Is github down or do you have no internet connection?"
-                            )
+                            "Something went wrong while trying "
+                            "to download AUTO-07p from github. \n"
+                            "Is github down or do you have no internet connection?"
                         )
                         state = "abort"
 
@@ -269,10 +259,8 @@ class AutoInstaller:
                         while not target_dir_does_not_exist_done:
                             if not fast_forward:
                                 create = input(
-                                    (
-                                        f"Target directory {target_dir} does not exist. "
-                                        "Try to create? ([y]/n) "
-                                    )
+                                    f"Target directory {target_dir} does not exist. "
+                                    "Try to create? ([y]/n) "
                                 )
                             else:
                                 create = "y"
@@ -315,9 +303,7 @@ class AutoInstaller:
                             os.makedirs(target_dir)
                             state = "extract_archive"
                         except OSError as e:
-                            print(
-                                "Could not create directory {target_dir}."
-                            )
+                            print("Could not create directory {target_dir}.")
                             print(e)
                             state = "abort"
 
@@ -325,9 +311,7 @@ class AutoInstaller:
                     state = "abort"
                     print(f"Extracting archive to {target_dir}")
                     try:
-                        self.unpack_auto_archive(
-                            auto_archive_path, target_dir
-                        )
+                        self.unpack_auto_archive(auto_archive_path, target_dir)
                         # os.remove(auto_archive_path)
                         print("Done.")
                         state = "configure_auto"
@@ -339,9 +323,7 @@ class AutoInstaller:
                 elif state in state_fun_dict.keys():
                     print(state_fun_dict[state]["output"])
                     try:
-                        for outline in state_fun_dict[state]["fun"](
-                            auto_dir
-                        ):
+                        for outline in state_fun_dict[state]["fun"](auto_dir):
                             print(outline)
                         status = 0
                         print("Done.\n")
@@ -360,9 +342,7 @@ class AutoInstaller:
                     cmd_path = os.path.join(auto_dir, "cmds")
                     try:
                         print("chmod executables...")
-                        for f in glob.glob(
-                            os.path.join(cmd_path, "@*")
-                        ):
+                        for f in glob.glob(os.path.join(cmd_path, "@*")):
                             os.chmod(f, 0o774)
                         print("Done")
                         state = "configure_env"
@@ -386,9 +366,7 @@ class AutoInstaller:
                     all_done = True
 
                 elif state == "finished":
-                    print(
-                        f"AUTO-07p successfully installed to {auto_dir}."
-                    )
+                    print(f"AUTO-07p successfully installed to {auto_dir}.")
                     print(
                         "If you want to run AUTO-07p commands in your shell "
                         "outside of pyfurc, you need to source the appropriate "
@@ -432,9 +410,7 @@ class AutoInstaller:
                             (
                                 code,
                                 output,
-                            ) = self.check_if_auto_dir_is_valid(
-                                auto_dir
-                            )
+                            ) = self.check_if_auto_dir_is_valid(auto_dir)
                             if code == 0:
                                 auto_dir_input_done = True
                             else:

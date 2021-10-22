@@ -1,21 +1,22 @@
-from sympy import Symbol, Rational, nfloat
-from sympy import Expr as spexpr
-from sympy import sin as sp_sin
-from sympy import pi as sp_pi
 import os
 import shutil
-from subprocess import Popen, PIPE
+from subprocess import PIPE, Popen
 from warnings import warn
-from appdirs import AppDirs
 
+from appdirs import AppDirs
+from sympy import Expr as spexpr
+from sympy import Rational, Symbol, nfloat
+from sympy import pi as sp_pi
+from sympy import sin as sp_sin
+
+from pyfurc.tools import AutoHelper
 from pyfurc.util import (
     AutoCodePrinter,
-    DataDir,
     AutoOutputReader,
     AutoParameters,
+    DataDir,
     HiddenAutoParameters,
 )
-from pyfurc.tools import AutoHelper
 
 
 class PhysicalQuantity(Symbol):
@@ -49,8 +50,7 @@ class PhysicalQuantity(Symbol):
         possible_quantity_types = ["load", "dof", "parameter"]
         if quantity_type.lower() not in possible_quantity_types:
             raise ValueError(
-                "quantity_type has to be one of: "
-                + ", ".join(possible_quantity_types)
+                "quantity_type has to be one of: " + ", ".join(possible_quantity_types)
             )
         obj._name = None
         obj.quantity_type = quantity_type.lower()
@@ -78,25 +78,19 @@ class Energy(spexpr):
             if type(atom) is PhysicalQuantity:
                 if atom.quantity_type == "dof":
                     self.ndofs += 1
-                    name = "U({:d})".format(self.ndofs)
+                    name = f"U({self.ndofs:d})"
                     atom._name = name
-                    self.dofs.update(
-                        {atom: {"name": name, "value": atom.value}}
-                    )
+                    self.dofs.update({atom: {"name": name, "value": atom.value}})
 
                 elif atom.quantity_type == "parameter":
                     self.nparams += 1
-                    name = "PAR({:d})".format(self.nparams + 1)
+                    name = f"PAR({self.nparams + 1:d})"
                     atom._name = name
-                    self.params.update(
-                        {atom: {"name": name, "value": atom.value}}
-                    )
+                    self.params.update({atom: {"name": name, "value": atom.value}})
                 elif atom.quantity_type == "load":
                     name = "PAR(1)"
                     atom._name = name
-                    self.load = {
-                        atom: {"name": name, "value": atom.value}
-                    }
+                    self.load = {atom: {"name": name, "value": atom.value}}
                     load_defined += 1
         if load_defined != 1:
             raise NotImplementedError(
@@ -112,9 +106,7 @@ class Energy(spexpr):
         return str(self.expr)
 
     def info(self):
-        infostr = "Potential energy with {:d} DOF(s):\n".format(
-            self.ndofs
-        )
+        infostr = "Potential energy with {:d} DOF(s):\n".format(self.ndofs)
         infostr += str(self.expr) + "\n\n"
         infostr += "The DOFs are:\n"
         for dof, dofdict in self.dofs.items():
@@ -169,15 +161,15 @@ class Energy(spexpr):
                 dicti[key]["value"] = value
                 found = True
         if not found:
-            raise KeyError("Variable {:s} not found".format(str(key)))
+            raise KeyError(f"Variable {str(key):s} not found")
 
 
 class BifurcationProblem:
     """Class for holding information on a bifurcation problem.
 
-    Objects of this class are defined by their :class:`pyfurc.core.Energy` 
-    expression and their ``name``. Upon instantiation a 
-    :class:`pyfurc.util.AutoParameters` is created that holds default 
+    Objects of this class are defined by their :class:`pyfurc.core.Energy`
+    expression and their ``name``. Upon instantiation a
+    :class:`pyfurc.util.AutoParameters` is created that holds default
     values for the calculations in AUTO-07p.
 
     Parameters
@@ -185,7 +177,7 @@ class BifurcationProblem:
     energy : :class:`pyfurc.core.Energy`
         The energy of the system containing at least one dof and one load.
     name : str, optional
-        Name of the bifurcation problem. The calculation output folder 
+        Name of the bifurcation problem. The calculation output folder
         will contain this name and a timestamp.
 
 
@@ -222,9 +214,9 @@ class BifurcationProblem:
         Parameters
         ----------
         param : str
-            Name of the parameter to change. 
+            Name of the parameter to change.
             See :class:`pyfurc.util.AutoParameters` for details.
-        value : 
+        value :
             The value to set ``param`` to.
 
         Raises
@@ -257,9 +249,7 @@ class BifurcationProblem:
             other = True
         try:
             dict_to_change = (
-                self.problem_parameters
-                if not other
-                else self._other_parameters
+                self.problem_parameters if not other else self._other_parameters
             )
             default_type = type(dict_to_change[param])
             if not (type(value) == default_type):
@@ -267,10 +257,7 @@ class BifurcationProblem:
                     value = float(value)
                 else:
                     raise TypeError(
-                        "Parameter "
-                        + param
-                        + " must be of type "
-                        + str(default_type)
+                        "Parameter " + param + " must be of type " + str(default_type)
                     )
             dict_to_change[param] = value
 
@@ -295,10 +282,7 @@ class BifurcationProblem:
         equis = self.energy.equilibrium()
         fort_eqs = []
         for i, eq in enumerate(equis):
-            fort_eq = (
-                "F({:d})=".format(i + 1)
-                + self._f_printer.doprint(eq).lstrip()
-            )
+            fort_eq = f"F({i + 1:d})=" + self._f_printer.doprint(eq).lstrip()
             fort_eqs.append(fort_eq)
         return fort_eqs
 
@@ -315,16 +299,9 @@ class BifurcationProblemSolver:
 
         code = "SUBROUTINE FUNC(NDIM,U,ICP,PAR,IJAC,F,DFDU,DFDP)\n\n"
         code += self._f_ind + "IMPLICIT NONE\n"
-        code += (
-            self._f_ind + "INTEGER, INTENT(IN) :: NDIM, IJAC, ICP(*)\n"
-        )
-        code += (
-            self._f_ind
-            + "DOUBLE PRECISION, INTENT(IN) :: U(NDIM), PAR(*)\n"
-        )
-        code += (
-            self._f_ind + "DOUBLE PRECISION, INTENT(OUT) :: F(NDIM)\n"
-        )
+        code += self._f_ind + "INTEGER, INTENT(IN) :: NDIM, IJAC, ICP(*)\n"
+        code += self._f_ind + "DOUBLE PRECISION, INTENT(IN) :: U(NDIM), PAR(*)\n"
+        code += self._f_ind + "DOUBLE PRECISION, INTENT(OUT) :: F(NDIM)\n"
         code += (
             self._f_ind
             + "DOUBLE PRECISION, INTENT(INOUT) :: DFDU(NDIM,NDIM),DFDP(NDIM,*)\n\n"
@@ -340,10 +317,7 @@ class BifurcationProblemSolver:
         code = "SUBROUTINE STPNT(NDIM,U,PAR,T)\n\n"
         code += self._f_ind + "IMPLICIT NONE\n"
         code += self._f_ind + "INTEGER, INTENT(IN) :: NDIM\n"
-        code += (
-            self._f_ind
-            + "DOUBLE PRECISION, INTENT(INOUT) :: U(NDIM),PAR(*)\n"
-        )
+        code += self._f_ind + "DOUBLE PRECISION, INTENT(INOUT) :: U(NDIM),PAR(*)\n"
         code += self._f_ind + "DOUBLE PRECISION, INTENT(IN) :: T\n\n"
         # body
         for _, load_info in self.problem.energy.load.items():
@@ -384,60 +358,37 @@ class BifurcationProblemSolver:
     def _f_bcnd(self):
         code = "SUBROUTINE BCND(NDIM,PAR,ICP,NBC,U0,U1,FB,IJAC,DBC)\n\n"
         code += self._f_ind + "IMPLICIT NONE\n"
+        code += self._f_ind + "INTEGER, INTENT(IN) :: NDIM, ICP(*), NBC, IJAC\n"
         code += (
-            self._f_ind
-            + "INTEGER, INTENT(IN) :: NDIM, ICP(*), NBC, IJAC\n"
+            self._f_ind + "DOUBLE PRECISION, INTENT(IN) :: PAR(*), U0(NDIM), U1(NDIM)\n"
         )
-        code += (
-            self._f_ind
-            + "DOUBLE PRECISION, INTENT(IN) :: PAR(*), U0(NDIM), U1(NDIM)\n"
-        )
-        code += (
-            self._f_ind + "DOUBLE PRECISION, INTENT(OUT) :: FB(NBC)\n"
-        )
-        code += (
-            self._f_ind
-            + "DOUBLE PRECISION, INTENT(INOUT) :: DBC(NBC,*)\n\n"
-        )
+        code += self._f_ind + "DOUBLE PRECISION, INTENT(OUT) :: FB(NBC)\n"
+        code += self._f_ind + "DOUBLE PRECISION, INTENT(INOUT) :: DBC(NBC,*)\n\n"
         code += "END SUBROUTINE BCND"
         return code
 
     def _f_icnd(self):
         code = "SUBROUTINE ICND(NDIM,PAR,ICP,NINT,U,UOLD,UDOT,UPOLD,FI,IJAC,DINT)\n\n"
         code += self._f_ind + "IMPLICIT NONE\n"
-        code += (
-            self._f_ind
-            + "INTEGER, INTENT(IN) :: NDIM, ICP(*), NINT, IJAC\n"
-        )
+        code += self._f_ind + "INTEGER, INTENT(IN) :: NDIM, ICP(*), NINT, IJAC\n"
         code += self._f_ind + "DOUBLE PRECISION, INTENT(IN) :: PAR(*)\n"
         code += (
             self._f_ind
             + "DOUBLE PRECISION, INTENT(IN) :: U(NDIM), UOLD(NDIM), UDOT(NDIM), UPOLD(NDIM)\n"
         )
-        code += (
-            self._f_ind + "DOUBLE PRECISION, INTENT(OUT) :: FI(NINT)\n"
-        )
-        code += (
-            self._f_ind
-            + "DOUBLE PRECISION, INTENT(INOUT) :: DINT(NINT,*)\n\n"
-        )
+        code += self._f_ind + "DOUBLE PRECISION, INTENT(OUT) :: FI(NINT)\n"
+        code += self._f_ind + "DOUBLE PRECISION, INTENT(INOUT) :: DINT(NINT,*)\n\n"
         code += "END SUBROUTINE ICND"
         return code
 
     def _f_fopt(self):
         code = "SUBROUTINE FOPT(NDIM,U,ICP,PAR,IJAC,FS,DFDU,DFDP)\n\n"
         code += self._f_ind + "IMPLICIT NONE\n"
-        code += (
-            self._f_ind + "INTEGER, INTENT(IN) :: NDIM, ICP(*), IJAC\n"
-        )
-        code += (
-            self._f_ind
-            + "DOUBLE PRECISION, INTENT(IN) :: U(NDIM), PAR(*)\n"
-        )
+        code += self._f_ind + "INTEGER, INTENT(IN) :: NDIM, ICP(*), IJAC\n"
+        code += self._f_ind + "DOUBLE PRECISION, INTENT(IN) :: U(NDIM), PAR(*)\n"
         code += self._f_ind + "DOUBLE PRECISION, INTENT(OUT) :: FS\n"
         code += (
-            self._f_ind
-            + "DOUBLE PRECISION, INTENT(INOUT) :: DFDU(NDIM),DFDP(*)\n\n"
+            self._f_ind + "DOUBLE PRECISION, INTENT(INOUT) :: DFDU(NDIM),DFDP(*)\n\n"
         )
         code += "END SUBROUTINE FOPT"
         return code
@@ -446,20 +397,13 @@ class BifurcationProblemSolver:
         code = "SUBROUTINE PVLS(NDIM,U,PAR)\n\n"
         code += self._f_ind + "IMPLICIT NONE\n"
         code += self._f_ind + "INTEGER, INTENT(IN) :: NDIM\n"
-        code += (
-            self._f_ind + "DOUBLE PRECISION, INTENT(IN) :: U(NDIM)\n"
-        )
-        code += (
-            self._f_ind
-            + "DOUBLE PRECISION, INTENT(INOUT) :: PAR(*)\n\n"
-        )
+        code += self._f_ind + "DOUBLE PRECISION, INTENT(IN) :: U(NDIM)\n"
+        code += self._f_ind + "DOUBLE PRECISION, INTENT(INOUT) :: PAR(*)\n\n"
         code += "END SUBROUTINE PVLS"
         return code
 
     def write_func_file(self, basedir="./", silent=False):
-        fname = os.path.join(
-            basedir, self.problem.problem_name + ".f90"
-        )
+        fname = os.path.join(basedir, self.problem.problem_name + ".f90")
         code = self._f_func() + "\n\n"
         code += self._f_stpnt() + "\n\n"
         code += self._f_bcnd() + "\n\n"
@@ -469,7 +413,7 @@ class BifurcationProblemSolver:
         with open(fname, "w") as outfile:
             outfile.write(code)
         if not silent:
-            print("File {:s} written.".format(fname))
+            print(f"File {fname:s} written.")
 
     def write_const_file(self, basedir="./", silent=False):
         fname = os.path.join(basedir, "c." + self.problem.problem_name)
@@ -482,7 +426,7 @@ class BifurcationProblemSolver:
                 outfile.write(outstr)
 
         if not silent:
-            print("File {:s} written.".format(fname))
+            print(f"File {fname:s} written.")
 
     def solve(self):
         ddir = DataDir(name=self.problem.problem_name)

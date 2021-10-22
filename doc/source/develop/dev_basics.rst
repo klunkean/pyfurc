@@ -1,7 +1,7 @@
 Developer Guide
 ===============
 If you want to contribute to pyfurc, fork the
-`git repository <https://github.com/klunkean/pyfurc>`_ and start from 
+`git repository <https://github.com/klunkean/pyfurc>`_ and start from
 there.
 
 Tools
@@ -15,10 +15,10 @@ easy to use virtual environments for developing.
 
 Sphinx
 ++++++
-The `documentation <https://pyfurc.readthedocs.io/>`_ is written in 
-reStructuredText and built using 
-`Sphinx <https://www.sphinx-doc.org/en/master/>`_. 
-The docs from the master branch are 
+The `documentation <https://pyfurc.readthedocs.io/>`_ is written in
+reStructuredText and built using
+`Sphinx <https://www.sphinx-doc.org/en/master/>`_.
+The docs from the master branch are
 hosted on `readthedocs <https://readthedocs.org/>`_.
 
 pytest

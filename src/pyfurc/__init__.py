@@ -1,24 +1,24 @@
 __author__ = "ak"
 __version__ = "0.1.7"
-import os, configparser, warnings
-
-from pyfurc.tools import AutoInstaller, AutoHelper
+import configparser
+import os
+import warnings
 
 from pyfurc.core import (
-    PhysicalQuantity,
-    Energy,
     BifurcationProblem,
-    BifurcationProblemSolver,
     BifurcationProblemSolution,
+    BifurcationProblemSolver,
+    Energy,
+    PhysicalQuantity,
 )
-
+from pyfurc.tools import AutoHelper, AutoInstaller
 from pyfurc.util import (
     AutoCodePrinter,
-    DataDir,
-    ParamDict,
-    AutoParameters,
-    HiddenAutoParameters,
     AutoOutputReader,
+    AutoParameters,
+    DataDir,
+    HiddenAutoParameters,
+    ParamDict,
 )
 
 ai = AutoInstaller()
