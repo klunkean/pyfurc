@@ -1,7 +1,8 @@
 import subprocess
 
-import pyfurc as pf
 import pytest
+
+import pyfurc as pf
 
 
 def test_auto_installation():
