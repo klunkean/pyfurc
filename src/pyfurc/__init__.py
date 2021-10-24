@@ -11,7 +11,7 @@ from pyfurc.core import (
     Energy,
     PhysicalQuantity,
 )
-from pyfurc.tools import AutoHelper, AutoInstaller
+from pyfurc.tools import setup_auto_exec_env
 from pyfurc.util import (
     AutoCodePrinter,
     AutoOutputReader,

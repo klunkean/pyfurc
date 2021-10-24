@@ -9,7 +9,7 @@ from sympy import Rational, Symbol, nfloat
 from sympy import pi as sp_pi
 from sympy import sin as sp_sin
 
-from pyfurc.tools import AutoHelper
+from pyfurc.tools import setup_auto_exec_env
 from pyfurc.util import (
     AutoCodePrinter,
     AutoOutputReader,
@@ -292,7 +292,6 @@ class BifurcationProblemSolver:
         self.problem = bf_problem
         self._f_printer = AutoCodePrinter()
         self._f_ind = "  "
-        self.ah = AutoHelper()
 
     def _f_func(self):
         eq_exprs = self.problem._fortran_equilibriums()
@@ -443,7 +442,7 @@ class BifurcationProblemSolver:
     def run_auto(self, dirc):
         print("Running AUTO on problem " + self.problem.problem_name)
         print("-" * 72)
-        env = self.ah.setup_auto_exec_env()
+        env = setup_auto_exec_env()
         command = ["@r", self.problem.problem_name]
         process = Popen(
             command,
