@@ -1,5 +1,6 @@
 import configparser as cp
 import glob
+import importlib.resources
 import os
 import readline
 import shutil
@@ -8,7 +9,6 @@ import urllib.request
 from zipfile import ZipFile
 
 from appdirs import AppDirs
-
 
 class AutoHelper:
     """Helper class for getting the configuration file path and setting up an ``env`` with AUTO-07p executables added to ``PATH``.
@@ -26,13 +26,15 @@ class AutoHelper:
 
     def setup_auto_exec_env(self):
         """Sets up AUTO-07p executable PATHs and returns an environment for use with subprocess"""
-        conf_file_path = self.get_conf_path()
-        config = cp.ConfigParser()
-        config.read_file(open(conf_file_path))
-        auto_dir = config["pyfurc"]["AUTO_DIR"]
-
         env = os.environ.copy()
-        env["AUTO_DIR"] = auto_dir
+
+        if "AUTO_DIR" in env:
+            auto_dir = env["AUTO_DIR"]
+        else:
+            with importlib.resources.path(__package__, "auto-07p") as auto_dir_path:
+                auto_dir = str(auto_dir_path)
+            env["AUTO_DIR"] = auto_dir
+
         with open(os.path.join(auto_dir, "cmds", "auto.env.sh")) as envf:
             for line in envf.readlines():
                 if line.startswith("PATH"):
