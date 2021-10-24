@@ -21,12 +21,12 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies frontend
-      run: python -m pip install build pytest
+      run: python -m pip install build pytest auditwheel
     - name: Build package wheel with build
       run: python -m build .
+    - name: Fix wheels
+      run: python -m auditwheel repair dist/*.whl
     - name: Install wheel with pip
-      run: python -m pip install --no-input dist/*.whl
-    - name: Install AUTO-07p with script
-      run: python -m pyfurc --install-auto --use-defaults
+      run: python -m pip install --no-input wheelhouse/*.whl
     - name: Run pytest
       run: pytest .
