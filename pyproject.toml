@@ -8,3 +8,16 @@ addopts = "-rA -q"
 testpaths = [
     "test",
 ]
+
+[tool.cibuildwheel]
+archs = ["native"]
+build= ["cp38-*_x86_64"]
+
+build-frontend = "build"
+
+test-command = "pytest {package}/tests"
+before-test = ""
+test-requires = ["pytest"]
+test-extras = []
+
+manylinux-x86_64-image = "manylinux2014"

@@ -3,12 +3,11 @@ name: tests
 on: [push, pull_request]
 
 jobs:
-  build:
+  build_wheel:
     strategy:
       fail-fast: false
       matrix:
         python-version: [3.8.2]
-        poetry-version: [1.1.4]
         os: [ubuntu-18.04]
     runs-on: ${{ matrix.os }}
     steps:
@@ -16,17 +15,30 @@ jobs:
       uses: actions/checkout@v2
       with:
         submodules: true
-    - name: Set up Python 3.8.2
+    - name: Build wheels
+      uses: pypa/cibuildwheel@v2.2.0
+    - uses: actions/upload-artifact@v2
+      with:
+        name: distribution
+        path: ./wheelhouse/*.whl
+
+  build_sdist:
+    runs-on: ubuntu-18.04
+    steps:
+    - name: Check out Repository
+      uses: actions/checkout@v2
+      with:
+        submodules: true
+    - name: Set up Python 3.8
       uses: actions/setup-python@v2
       with:
-        python-version: ${{ matrix.python-version }}
+        python-version: 3.8
     - name: Install dependencies frontend
-      run: python -m pip install build pytest auditwheel
+      run: python -m pip install build
     - name: Build package wheel with build
-      run: python -m build .
-    - name: Fix wheels
-      run: python -m auditwheel repair dist/*.whl
-    - name: Install wheel with pip
-      run: python -m pip install --no-input wheelhouse/*.whl
-    - name: Run pytest
-      run: pytest .
+      run: python -m build . --sdist
+    - name: Upload source package
+      uses: actions/upload-artifact@v2
+      with:
+        name: distribution
+        path: dist/
