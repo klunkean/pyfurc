@@ -8,21 +8,12 @@ import subprocess
 import urllib.request
 from zipfile import ZipFile
 
-from appdirs import AppDirs
 
 class AutoHelper:
     """Helper class for getting the configuration file path and setting up an ``env`` with AUTO-07p executables added to ``PATH``.
 
     This class is not intended to be used.
     """
-
-    def get_conf_path(self):
-        dirs = AppDirs("pyfurc", "klunkean")
-        # TODO: Switch to platformdirs
-        user_dir = dirs.user_data_dir
-        conf_name = "pyfurc.conf"
-        conf_file_path = os.path.join(user_dir, conf_name)
-        return conf_file_path
 
     def setup_auto_exec_env(self):
         """Sets up AUTO-07p executable PATHs and returns an environment for use with subprocess"""
