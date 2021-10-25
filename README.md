@@ -3,17 +3,17 @@
 # What is pyfurc?
 
 pyfurc is a python module that facilitates calculations for non-linear
-mechanical systems exhibiting bifurcations with the generalized 
+mechanical systems exhibiting bifurcations with the generalized
 path-following FORTRAN program [AUTO-07p](http://indy.cs.concordia.ca/auto/)
-directly in python. 
+directly in python.
 
-Energy expressions, degrees of freedom and loads are defined 
+Energy expressions, degrees of freedom and loads are defined
 using  [sympy](https://docs.sympy.org/latest/index.html)
-symbolic math processing functionality, and equilibrium equations 
+symbolic math processing functionality, and equilibrium equations
 are automatically derived symbolically.
 
-pyfurc then generates FORTRAN code for the bifurcation problem, 
-calls the AUTO-07p routines and reads the result into a 
+pyfurc then generates FORTRAN code for the bifurcation problem,
+calls the AUTO-07p routines and reads the result into a
 [pandas](https://pandas.pydata.org/docs/user_guide/index.html) DataFrame
 for post-processing in python.
 
@@ -44,14 +44,14 @@ for dat in bf.solution.raw_data:
     plt.plot(dat["U(1)"], dat["PAR(1)"])
 ```
 
-To get started, check out the Quickstart section below or check the 
+To get started, check out the Quickstart section below or check the
 in-depth guides in the [Documentation](https://pyfurc.readthedocs.io/en/latest/).
 
 # Quickstart
 
 Prerequisites:
 
-* Running Linux distribution 
+* Running Linux distribution
 * Python 3.8.2+
 * pip
 
@@ -66,7 +66,7 @@ If the installation was successful run
 ```bash
 python3 -m pyfurc --install-auto
 ```
-to install and configure AUTO-07p. 
+to install and configure AUTO-07p.
 
 # Documentation
 
@@ -85,14 +85,14 @@ Open up a Ubuntu Terminal and run
 ```shell
 pip3 install notebook
 ```
-All done! 
+All done!
 
-In the Ubuntu Terminal now run 
+In the Ubuntu Terminal now run
 ```shell
 jupyter notebook
 ```
 
-The output should contain 
+The output should contain
 ```
 http://localhost:8888/?token=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ```
@@ -106,13 +106,13 @@ For future convenience set a password at the bottom of the page! Here you must s
 
 Once you have set the password you're redirected to jupyter's landing page showing you the home directory of your Ubuntu file system (should be empty).
 
-On the top right, click "new" -> "python3". 
+On the top right, click "new" -> "python3".
 
-Now you have a jupyter notebook to play with. Type 
+Now you have a jupyter notebook to play with. Type
 ```python
 print("Hello World!")
 ```
-in the first cell and hit Ctrl+Enter. 
+in the first cell and hit Ctrl+Enter.
 
 # 4 A first Example: Hinged cantilever
 
@@ -139,7 +139,7 @@ from math import pi
 
 Let us first define all contained variables as `pyfurc.PhysicalQuantity`.
 
-It is important to set the `quantity_type` kwarg which may be one of `DOF`, `load` or `parameter`. 
+It is important to set the `quantity_type` kwarg which may be one of `DOF`, `load` or `parameter`.
 
 The `value` kwarg is optional (default=0.0) and will set the initial values if `quantity_type` is `DOF` or `load`, or the fixed constant value if `quantity_type` is `parameter`. The values can be changed later.
 
@@ -176,7 +176,7 @@ Output:
 
     Potential energy with 1 DOF(s):
     -P*ell*(-cos(\varphi) + 1) + 0.5*\varphi**2*c_T
-    
+
     The DOFs are:
     	\varphi - Fortran Name: U(1) - Init. Value: 0.000000
     The parameters are:
@@ -184,7 +184,7 @@ Output:
     	ell - Fortran Name: PAR(3) - Value: 0.500000
     The load is:
     	P - Fortran Name: PAR(1) - Init. Value: 0.000000
-    
+
 
 
 Or directly access the information dicts `params`, `dofs` or `load`, e.g.:
@@ -251,7 +251,7 @@ Output:
     IPLT	: 0
     UZR	: {}
     UZSTOP	: {}
-    
+
 
 
 Refer to the AUTO documentation for detailed descriptions of the parameters. The names are identical with the names used in the AUTO `c.xxx` file
@@ -285,21 +285,21 @@ Output:
     gfortran -fopenmp -O -c hinged.f90 -o hinged.o
     gfortran -fopenmp -O hinged.o -o hinged.exe /home/andre/localtu/prog/auto/07p/lib/*.o
     Starting hinged ...
-    
-      BR    PT  TY  LAB    PAR(1)        L2-NORM         U(1)     
+
+      BR    PT  TY  LAB    PAR(1)        L2-NORM         U(1)
        1     1  EP    1   0.00000E+00   0.00000E+00   0.00000E+00
        1    33  BP    2   6.36620E+00   0.00000E+00   0.00000E+00
        1    65  EP    3   1.27662E+01   0.00000E+00   0.00000E+00
-    
-      BR    PT  TY  LAB    PAR(1)        L2-NORM         U(1)     
+
+      BR    PT  TY  LAB    PAR(1)        L2-NORM         U(1)
        2    59  EP    4   1.28314E+01   1.90442E+00   1.90442E+00
-    
-      BR    PT  TY  LAB    PAR(1)        L2-NORM         U(1)     
+
+      BR    PT  TY  LAB    PAR(1)        L2-NORM         U(1)
        2    59  EP    5   1.28314E+01   1.90442E+00  -1.90442E+00
-    
+
      Total Time    0.628E-02
     hinged ... done
-    
+
     ------------------------------------------------------------------------
 
 
@@ -327,7 +327,7 @@ This is what we have done:
 * Define `Energy` Object
 * Define `BifurcationProblem` object and set parameters
 * Define `BifurcationProblemSolver` object and call `solve` method
-* Plot results from `BifurcationProblem.solution` 
+* Plot results from `BifurcationProblem.solution`
 
 ## 4.3 Runnable Code:
 ```python
@@ -359,28 +359,28 @@ for dat in bf.solution.raw_data:
     plt.plot(dat["U(1)"], dat["PAR(1)"])
 ```
 
-Output 
+Output
 
     Running AUTO on problem hinged
     ------------------------------------------------------------------------
     gfortran -fopenmp -O -c hinged.f90 -o hinged.o
     gfortran -fopenmp -O hinged.o -o hinged.exe /home/andre/localtu/prog/auto/07p/lib/*.o
     Starting hinged ...
-    
-      BR    PT  TY  LAB    PAR(1)        L2-NORM         U(1)     
+
+      BR    PT  TY  LAB    PAR(1)        L2-NORM         U(1)
        1     1  EP    1   0.00000E+00   0.00000E+00   0.00000E+00
        1    33  BP    2   6.36620E+00   0.00000E+00   0.00000E+00
        1    65  EP    3   1.27662E+01   0.00000E+00   0.00000E+00
-    
-      BR    PT  TY  LAB    PAR(1)        L2-NORM         U(1)     
+
+      BR    PT  TY  LAB    PAR(1)        L2-NORM         U(1)
        2    59  EP    4   1.28314E+01   1.90442E+00   1.90442E+00
-    
-      BR    PT  TY  LAB    PAR(1)        L2-NORM         U(1)     
+
+      BR    PT  TY  LAB    PAR(1)        L2-NORM         U(1)
        2    59  EP    5   1.28314E+01   1.90442E+00  -1.90442E+00
-    
+
      Total Time    0.530E-02
     hinged ... done
-    
+
     ------------------------------------------------------------------------
 
 # pyfurc roadmap:

@@ -2,11 +2,11 @@ Manually installing AUTO-07p on Ubuntu
 **************************************
 
 .. note::
-   This guide assumes a running Ubuntu system. 
+   This guide assumes a running Ubuntu system.
 
-As a python interface to `AUTO-07p <http://indy.cs.concordia.ca/auto/>`_ 
+As a python interface to `AUTO-07p <http://indy.cs.concordia.ca/auto/>`_
 (`GitHub <https://github.com/auto-07p/auto-07p>`_), pyfurc relies on a
-working installation of AUTO-07p. 
+working installation of AUTO-07p.
 
 .. note::
    It is recommended to use the provided installation script to install AUTO-07p
@@ -44,32 +44,32 @@ Installing AUTO-07p
 
 1. ``cd`` into the directory you want AUTO-07p to be installed in
    (e.g. ``~/.local/bin``) and clone the AUTO-07p github repository:
-   
+
    .. code-block:: bash
 
       git clone https://github.com/auto-07p/auto-07p.git
-   
-   
+
+
 2. ``cd`` into the ``auto-07p`` directory and run
-   
+
    .. code-block:: bash
 
       ./configure --enable-plaut=no --enable-plaut04=no
 
-3. If configuration was successful, run 
-   
+3. If configuration was successful, run
+
    .. code-block:: bash
 
       make
-      
+
    in the same directory.
 
-4. After compilation is done type 
-   
+4. After compilation is done type
+
    .. code-block:: bash
 
-      make clean 
-      
+      make clean
+
    to remove auxiliary files
 
 Making AUTO-07p usable with pyfurc
@@ -98,26 +98,26 @@ contains one variable and looks like this:
 
 
 
-.. 5. To make AUTO-07p commands usable you need to make a change in the 
-..    environment file ``auto-07p/cmds/auto.env.sh``. 
+.. 5. To make AUTO-07p commands usable you need to make a change in the
+..    environment file ``auto-07p/cmds/auto.env.sh``.
 ..    Open that file and change the line
 
 ..    ::
-   
+
 ..       AUTO_DIR=$HOME/auto/07p
 
 ..    to the following line. Make sure to insert the directory you chose for
 ..    installation.
 
 ..    ::
-   
+
 ..       AUTO_DIR=$HOME/.local/bin/auto/07p
-   
-.. 6. Source the environment file. If you're using bash or something 
+
+.. 6. Source the environment file. If you're using bash or something
 ..    similar, just add the line
 
 ..    ::
-   
+
 ..       source $HOME/.local/bin/auto/07p/cmds/auto.env.sh
 
 ..    to your ``~/.bashrc`` file. Make sure to insert the directory you chose for
@@ -125,18 +125,18 @@ contains one variable and looks like this:
 
 .. 7.  Close your terminal and open a new one, type
 ..     ::
-      
-..       @r 
-      
+
+..       @r
+
 ..     If your output is:
 ..     ::
-   
+
 ..       xyz/auto/07p/cmds/@r: cannot open c..: No such file
-   
-..     Then it is likely that the installation was **successful**. 
+
+..     Then it is likely that the installation was **successful**.
 ..     Likewise, if the output is
 ..     ::
-   
+
 ..       @r: command not found
-   
+
 ..     something went wrong.

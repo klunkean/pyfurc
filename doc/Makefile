@@ -23,7 +23,7 @@ help:
 	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
 
 # Modify the automatically generated apidoc including an introduction and
-# removing the Submodules heading. 
+# removing the Submodules heading.
 # Check out the script doc/api/mod_api_doc.py
 api:
 	@$(SPHINXAPIDOC) -MTf -o $(APIDIR) $(MODULEPATH)

@@ -3,32 +3,42 @@ name: tests
 on: [push, pull_request]
 
 jobs:
-  build:
+  build_wheel:
     strategy:
       fail-fast: false
       matrix:
         python-version: [3.8.2]
-        poetry-version: [1.1.4]
         os: [ubuntu-18.04]
     runs-on: ${{ matrix.os }}
     steps:
     - name: Check out Repository
       uses: actions/checkout@v2
-    - name: Set up Python 3.8.2
+      with:
+        submodules: true
+    - name: Build wheels
+      uses: pypa/cibuildwheel@v2.2.0
+    - uses: actions/upload-artifact@v2
+      with:
+        name: distribution
+        path: ./wheelhouse/*.whl
+
+  build_sdist:
+    runs-on: ubuntu-18.04
+    steps:
+    - name: Check out Repository
+      uses: actions/checkout@v2
+      with:
+        submodules: true
+    - name: Set up Python 3.8
       uses: actions/setup-python@v2
       with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install poetry
-      uses: abatilo/actions-poetry@v2.0.0
+        python-version: 3.8
+    - name: Install dependencies frontend
+      run: python -m pip install build
+    - name: Build package wheel with build
+      run: python -m build . --sdist
+    - name: Upload source package
+      uses: actions/upload-artifact@v2
       with:
-        poetry-version: ${{ matrix.poetry-version }}
-    - name: Build package wheel with poetry
-      run: poetry build -nf wheel
-    - name: Install wheel with pip
-      run: pip install --no-input dist/*.whl
-    - name: Install AUTO-07p with script
-      run: python -m pyfurc --install-auto --use-defaults
-    - name: Install pytest
-      run: pip install pytest
-    - name: Run pytest
-      run: pytest .
+        name: distribution
+        path: dist/

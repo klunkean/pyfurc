@@ -36,7 +36,7 @@ extensions = [
     "sphinx.ext.coverage",
     "sphinx.ext.napoleon",
     "sphinx.ext.intersphinx",
-    'sphinx.ext.autosectionlabel',
+    "sphinx.ext.autosectionlabel",
 ]
 
 napoleon_google_docstring = False
@@ -98,7 +98,8 @@ html_static_path = ["_static"]
 from sphinx.ext.autodoc import ClassDocumenter, _
 
 add_line = ClassDocumenter.add_line
-line_to_delete = _(u'Bases: %s') % u':class:`object`'
+line_to_delete = _("Bases: %s") % ":class:`object`"
+
 
 def add_line_no_object_base(self, text, *args, **kwargs):
     if text.strip() == line_to_delete:
@@ -106,7 +107,9 @@ def add_line_no_object_base(self, text, *args, **kwargs):
 
     add_line(self, text, *args, **kwargs)
 
+
 add_directive_header = ClassDocumenter.add_directive_header
+
 
 def add_directive_header_no_object_base(self, *args, **kwargs):
     self.add_line = add_line_no_object_base.__get__(self)
@@ -116,5 +119,6 @@ def add_directive_header_no_object_base(self, *args, **kwargs):
     del self.add_line
 
     return result
+
 
 ClassDocumenter.add_directive_header = add_directive_header_no_object_base

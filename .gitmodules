@@ -1,0 +1,3 @@
+[submodule "auto-07p"]
+	path = src/pyfurc/auto-07p
+	url = https://github.com/auto-07p/auto-07p.git

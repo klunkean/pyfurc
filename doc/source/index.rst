@@ -5,17 +5,17 @@ Welcome to pyfurc's documentation and user guide.
 What is pyfurc?
 +++++++++++++++
 pyfurc is a python module that facilitates calculations for non-linear
-mechanical systems exhibiting bifurcations with the generalized 
+mechanical systems exhibiting bifurcations with the generalized
 path-following FORTRAN program `AUTO-07p <http://indy.cs.concordia.ca/auto/>`_
-directly in python. 
+directly in python.
 
-Energy expressions, degrees of freedom and loads are defined 
-using  `sympy <https://docs.sympy.org/latest/index.html>`_'s 
-symbolic math processing functionality, and equilibrium equations 
+Energy expressions, degrees of freedom and loads are defined
+using  `sympy <https://docs.sympy.org/latest/index.html>`_'s
+symbolic math processing functionality, and equilibrium equations
 are automatically derived symbolically.
 
-pyfurc then generates FORTRAN code for the bifurcation problem, 
-calls the AUTO-07p routines and reads the result into a 
+pyfurc then generates FORTRAN code for the bifurcation problem,
+calls the AUTO-07p routines and reads the result into a
 `pandas <https://pandas.pydata.org/docs/user_guide/index.html>`_ DataFrame
 for post-processing in python.
 
@@ -50,14 +50,14 @@ Solving a bifurcation problem can be this simple:
    for dat in bf.solution.raw_data:
       plt.plot(dat["U(1)"], dat["PAR(1)"])
 
-To get started, check out the Quickstart section below or see the 
+To get started, check out the Quickstart section below or see the
 :ref:`in-depth user guide<User Guide>`.
 
 Quickstart
 ++++++++++
 Prerequisites:
 
-* Running Linux distribution 
+* Running Linux distribution
 * Python 3.8.2+
 * pip
 
@@ -73,7 +73,7 @@ If the installation was successful run
 
    python3 -m pyfurc --install-auto
 
-to install and configure AUTO-07p. 
+to install and configure AUTO-07p.
 
 After this you're ready to go.
 
