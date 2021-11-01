@@ -3,7 +3,6 @@ import shutil
 from subprocess import PIPE, Popen
 from warnings import warn
 
-from appdirs import AppDirs
 from sympy import Expr as spexpr
 from sympy import Rational, Symbol, nfloat
 from sympy import pi as sp_pi
