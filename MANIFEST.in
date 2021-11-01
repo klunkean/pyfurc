@@ -1,3 +1,4 @@
-recursive-include src/pyfurc/auto-07p *
+recursive-include ext/auto-07p *
 recursive-include doc *
+recursive-include test *
 include scripts/build-auto-07p.sh
