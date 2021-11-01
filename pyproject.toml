@@ -17,6 +17,6 @@ build-frontend = "build"
 test-command = "pytest {project}/test"
 before-test = ""
 test-requires = ["pytest"]
-test-extras = []
+test-extras = "test"
 
 manylinux-x86_64-image = "manylinux2014"
