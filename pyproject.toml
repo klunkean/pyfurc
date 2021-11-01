@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [tool.pytest.ini_options]
 minversion = "6.0"
-addopts = "-rA -q"
+addopts = "-rA -q --ignore=ext/"
 testpaths = [
     "test",
 ]
@@ -12,10 +12,9 @@ testpaths = [
 [tool.cibuildwheel]
 archs = ["native"]
 build= ["cp38-*_x86_64"]
-
+build-verbosity = 1
 build-frontend = "build"
-
-test-command = "pytest {package}/tests"
+test-command = "pytest {project}/test"
 before-test = ""
 test-requires = ["pytest"]
 test-extras = []
