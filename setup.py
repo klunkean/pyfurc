@@ -86,14 +86,23 @@ class custom_build_ext(build_ext):
         else:
             distutils_logger.info("Executing auto-07p configuration")
             auto_src_dir = "ext/auto-07p"
+            # flags needed for building on a different machine than
+            # the one running the code
+            env = os.environ.copy()
+            env["FCFLAGS"] = "-fPIC"
+            env["CFLAGS"] = "-fPIC"
+            env["CPPFLAGS"] = "-fPIC"
             configure_cmd = [
                 "./configure",
                 "--enable-plaut=no",
                 "--enable-plaut04=no",
+                f" --prefix={auto_src_dir}",
+                f" --exec-prefix={auto_src_dir}"
             ]
             configure_process = subprocess.Popen(
                 configure_cmd,
                 cwd=auto_src_dir,
+                env=env,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 shell=True,
