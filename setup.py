@@ -35,27 +35,24 @@ class custom_install_data(install_data):
 
 class custom_install_lib(install_lib):
     def run(self):
-        self.announce("Moving auto-07p files", level=3)
         self.skip_build = True
         include = []
-        # Copy selected files to wheel. Source dist contains the
-        # whole directory via MANIFEST.in
-        auto_dir = os.path.join("ext", "auto-07p")
+        distutils_logger.info("Moving auto-07p files")
+        # Copy library to wheel. Source dist contains the
+        # whole ext/auto-07p directory via MANIFEST.in
+        auto_lib_dir = os.path.join(self.distribution.bin_dir, "lib")
+        auto_lib_file = os.path.join(auto_lib_dir, "libauto.so")
+
         install_auto_dir = os.path.join("pyfurc.ext", "auto-07p")
-        exclude_dirs = ["doc", "python", "test", "demos"]
-        for root, dirs, files in os.walk(auto_dir):
-            dirs[:] = [d for d in dirs if d not in exclude_dirs]
-            for f in files:
-                target_dir = os.path.join(
-                    self.install_dir, root
-                ).replace(auto_dir, install_auto_dir)
-                os.makedirs(target_dir, exist_ok=True)
-                shutil.move(os.path.join(root, f), target_dir)
+        target_dir = os.path.join(
+            self.install_dir, install_auto_dir, "lib"
+        )
+        os.makedirs(target_dir, exist_ok=True)
+        shutil.move(auto_lib_file, target_dir)
 
-                include.append(f)
-
-        # self.distribution.data_files = include
-
+        self.distribution.data_files = [
+            os.path.join(target_dir, os.path.basename(auto_lib_file))
+        ]
         self.distribution.run_command("install_data")
 
         super().run()
@@ -66,7 +63,6 @@ auto_ext = Extension(
     sources=[],
 )
 
-
 class custom_build_ext(build_ext):
     """
     Specialized builder for auto-07p
@@ -74,9 +70,12 @@ class custom_build_ext(build_ext):
 
     special_extension = auto_ext.name
 
-    def log_subprocess_output(self, pipe):
-        for line in iter(pipe.readline, b""):  # b'\n'-separated lines
-            distutils_logger.debug(str(line, "utf-8"))
+    def log_subprocess_output(self, pipe, debug=False):
+        for line in iter(pipe.readline, ""):  # b'\n'-separated lines
+            if debug:
+                distutils_logger.info(line.rstrip("\n"))
+            else:
+                distutils_logger.debug(line.rstrip("\n"))
 
     def build_extension(self, ext):
         if ext.name != self.special_extension:
@@ -85,30 +84,35 @@ class custom_build_ext(build_ext):
 
         else:
             distutils_logger.info("Executing auto-07p configuration")
-            auto_src_dir = "ext/auto-07p"
+            auto_src_dir = os.path.join("ext", "auto-07p")
             # flags needed for building on a different machine than
             # the one running the code
             env = os.environ.copy()
-            env["FCFLAGS"] = "-fPIC"
-            env["CFLAGS"] = "-fPIC"
-            env["CPPFLAGS"] = "-fPIC"
+            env["FFLAGS"] = "-Wall -fPIC"
+            manylinux_build_tag = "x86_64-redhat-linux"
+            target_build_tag = "x86_64-pc-linux-gnu"
             configure_cmd = [
                 "./configure",
                 "--enable-plaut=no",
                 "--enable-plaut04=no",
-                f" --prefix={auto_src_dir}",
-                f" --exec-prefix={auto_src_dir}"
+                "--enable-plaut04-qt=no",
+                "--enable-gui=no",
+                "--without-openmp",
+                "--without-mpi",
+                f"--build={manylinux_build_tag}",
+                f"--host={target_build_tag}",
             ]
+
             configure_process = subprocess.Popen(
                 configure_cmd,
                 cwd=auto_src_dir,
                 env=env,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
-                shell=True,
+                universal_newlines=True,
             )
             with configure_process.stdout as stdout:
-                self.log_subprocess_output(stdout)
+                self.log_subprocess_output(stdout, debug=True)
 
             distutils_logger.info("Building auto-07p")
             make_cmd = ["make", "-j3"]
@@ -117,10 +121,32 @@ class custom_build_ext(build_ext):
                 cwd=auto_src_dir,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
-                shell=True,
+                universal_newlines=True,
             )
             with make_process.stdout as stdout:
-                self.log_subprocess_output(stdout)
+                self.log_subprocess_output(stdout, debug=True)
+
+            distutils_logger.info("Building auto-07p library")
+            auto_lib_dir = os.path.join(auto_src_dir, "lib")
+            build_lib_cmd = [
+                "gfortran",
+                "-v",
+                "-shared",
+                "-o",
+                os.path.join(auto_lib_dir, "libauto.so"),
+            ] + [f for f in glob(os.path.join(auto_lib_dir, "*.o"))]
+
+            build_lib_process = subprocess.Popen(
+                build_lib_cmd,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                universal_newlines=True,
+            )
+
+            with build_lib_process.stdout as stdout:
+                self.log_subprocess_output(stdout, debug=True)
+
+            self.distribution.bin_dir = os.path.join(auto_src_dir)
 
 
 setup(
