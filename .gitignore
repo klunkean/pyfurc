@@ -344,3 +344,4 @@ graphics/
 testing.ipynb
 bumpversion.sh
 debug.py
+autotest.py
