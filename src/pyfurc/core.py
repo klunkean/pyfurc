@@ -49,7 +49,8 @@ class PhysicalQuantity(Symbol):
         possible_quantity_types = ["load", "dof", "parameter"]
         if quantity_type.lower() not in possible_quantity_types:
             raise ValueError(
-                "quantity_type has to be one of: " + ", ".join(possible_quantity_types)
+                "quantity_type has to be one of: "
+                + ", ".join(possible_quantity_types)
             )
         obj._name = None
         obj.quantity_type = quantity_type.lower()
@@ -79,17 +80,23 @@ class Energy(spexpr):
                     self.ndofs += 1
                     name = f"U({self.ndofs:d})"
                     atom._name = name
-                    self.dofs.update({atom: {"name": name, "value": atom.value}})
+                    self.dofs.update(
+                        {atom: {"name": name, "value": atom.value}}
+                    )
 
                 elif atom.quantity_type == "parameter":
                     self.nparams += 1
                     name = f"PAR({self.nparams + 1:d})"
                     atom._name = name
-                    self.params.update({atom: {"name": name, "value": atom.value}})
+                    self.params.update(
+                        {atom: {"name": name, "value": atom.value}}
+                    )
                 elif atom.quantity_type == "load":
                     name = "PAR(1)"
                     atom._name = name
-                    self.load = {atom: {"name": name, "value": atom.value}}
+                    self.load = {
+                        atom: {"name": name, "value": atom.value}
+                    }
                     load_defined += 1
         if load_defined != 1:
             raise NotImplementedError(
@@ -248,7 +255,9 @@ class BifurcationProblem:
             other = True
         try:
             dict_to_change = (
-                self.problem_parameters if not other else self._other_parameters
+                self.problem_parameters
+                if not other
+                else self._other_parameters
             )
             default_type = type(dict_to_change[param])
             if not (type(value) == default_type):
@@ -256,7 +265,10 @@ class BifurcationProblem:
                     value = float(value)
                 else:
                     raise TypeError(
-                        "Parameter " + param + " must be of type " + str(default_type)
+                        "Parameter "
+                        + param
+                        + " must be of type "
+                        + str(default_type)
                     )
             dict_to_change[param] = value
 
@@ -281,7 +293,9 @@ class BifurcationProblem:
         equis = self.energy.equilibrium()
         fort_eqs = []
         for i, eq in enumerate(equis):
-            fort_eq = f"F({i + 1:d})=" + self._f_printer.doprint(eq).lstrip()
+            fort_eq = (
+                f"F({i + 1:d})=" + self._f_printer.doprint(eq).lstrip()
+            )
             fort_eqs.append(fort_eq)
         return fort_eqs
 
@@ -297,9 +311,16 @@ class BifurcationProblemSolver:
 
         code = "SUBROUTINE FUNC(NDIM,U,ICP,PAR,IJAC,F,DFDU,DFDP)\n\n"
         code += self._f_ind + "IMPLICIT NONE\n"
-        code += self._f_ind + "INTEGER, INTENT(IN) :: NDIM, IJAC, ICP(*)\n"
-        code += self._f_ind + "DOUBLE PRECISION, INTENT(IN) :: U(NDIM), PAR(*)\n"
-        code += self._f_ind + "DOUBLE PRECISION, INTENT(OUT) :: F(NDIM)\n"
+        code += (
+            self._f_ind + "INTEGER, INTENT(IN) :: NDIM, IJAC, ICP(*)\n"
+        )
+        code += (
+            self._f_ind
+            + "DOUBLE PRECISION, INTENT(IN) :: U(NDIM), PAR(*)\n"
+        )
+        code += (
+            self._f_ind + "DOUBLE PRECISION, INTENT(OUT) :: F(NDIM)\n"
+        )
         code += (
             self._f_ind
             + "DOUBLE PRECISION, INTENT(INOUT) :: DFDU(NDIM,NDIM),DFDP(NDIM,*)\n\n"
@@ -315,7 +336,10 @@ class BifurcationProblemSolver:
         code = "SUBROUTINE STPNT(NDIM,U,PAR,T)\n\n"
         code += self._f_ind + "IMPLICIT NONE\n"
         code += self._f_ind + "INTEGER, INTENT(IN) :: NDIM\n"
-        code += self._f_ind + "DOUBLE PRECISION, INTENT(INOUT) :: U(NDIM),PAR(*)\n"
+        code += (
+            self._f_ind
+            + "DOUBLE PRECISION, INTENT(INOUT) :: U(NDIM),PAR(*)\n"
+        )
         code += self._f_ind + "DOUBLE PRECISION, INTENT(IN) :: T\n\n"
         # body
         for _, load_info in self.problem.energy.load.items():
@@ -356,37 +380,60 @@ class BifurcationProblemSolver:
     def _f_bcnd(self):
         code = "SUBROUTINE BCND(NDIM,PAR,ICP,NBC,U0,U1,FB,IJAC,DBC)\n\n"
         code += self._f_ind + "IMPLICIT NONE\n"
-        code += self._f_ind + "INTEGER, INTENT(IN) :: NDIM, ICP(*), NBC, IJAC\n"
         code += (
-            self._f_ind + "DOUBLE PRECISION, INTENT(IN) :: PAR(*), U0(NDIM), U1(NDIM)\n"
+            self._f_ind
+            + "INTEGER, INTENT(IN) :: NDIM, ICP(*), NBC, IJAC\n"
         )
-        code += self._f_ind + "DOUBLE PRECISION, INTENT(OUT) :: FB(NBC)\n"
-        code += self._f_ind + "DOUBLE PRECISION, INTENT(INOUT) :: DBC(NBC,*)\n\n"
+        code += (
+            self._f_ind
+            + "DOUBLE PRECISION, INTENT(IN) :: PAR(*), U0(NDIM), U1(NDIM)\n"
+        )
+        code += (
+            self._f_ind + "DOUBLE PRECISION, INTENT(OUT) :: FB(NBC)\n"
+        )
+        code += (
+            self._f_ind
+            + "DOUBLE PRECISION, INTENT(INOUT) :: DBC(NBC,*)\n\n"
+        )
         code += "END SUBROUTINE BCND"
         return code
 
     def _f_icnd(self):
         code = "SUBROUTINE ICND(NDIM,PAR,ICP,NINT,U,UOLD,UDOT,UPOLD,FI,IJAC,DINT)\n\n"
         code += self._f_ind + "IMPLICIT NONE\n"
-        code += self._f_ind + "INTEGER, INTENT(IN) :: NDIM, ICP(*), NINT, IJAC\n"
+        code += (
+            self._f_ind
+            + "INTEGER, INTENT(IN) :: NDIM, ICP(*), NINT, IJAC\n"
+        )
         code += self._f_ind + "DOUBLE PRECISION, INTENT(IN) :: PAR(*)\n"
         code += (
             self._f_ind
             + "DOUBLE PRECISION, INTENT(IN) :: U(NDIM), UOLD(NDIM), UDOT(NDIM), UPOLD(NDIM)\n"
         )
-        code += self._f_ind + "DOUBLE PRECISION, INTENT(OUT) :: FI(NINT)\n"
-        code += self._f_ind + "DOUBLE PRECISION, INTENT(INOUT) :: DINT(NINT,*)\n\n"
+        code += (
+            self._f_ind + "DOUBLE PRECISION, INTENT(OUT) :: FI(NINT)\n"
+        )
+        code += (
+            self._f_ind
+            + "DOUBLE PRECISION, INTENT(INOUT) :: DINT(NINT,*)\n\n"
+        )
         code += "END SUBROUTINE ICND"
         return code
 
     def _f_fopt(self):
         code = "SUBROUTINE FOPT(NDIM,U,ICP,PAR,IJAC,FS,DFDU,DFDP)\n\n"
         code += self._f_ind + "IMPLICIT NONE\n"
-        code += self._f_ind + "INTEGER, INTENT(IN) :: NDIM, ICP(*), IJAC\n"
-        code += self._f_ind + "DOUBLE PRECISION, INTENT(IN) :: U(NDIM), PAR(*)\n"
+        code += (
+            self._f_ind + "INTEGER, INTENT(IN) :: NDIM, ICP(*), IJAC\n"
+        )
+        code += (
+            self._f_ind
+            + "DOUBLE PRECISION, INTENT(IN) :: U(NDIM), PAR(*)\n"
+        )
         code += self._f_ind + "DOUBLE PRECISION, INTENT(OUT) :: FS\n"
         code += (
-            self._f_ind + "DOUBLE PRECISION, INTENT(INOUT) :: DFDU(NDIM),DFDP(*)\n\n"
+            self._f_ind
+            + "DOUBLE PRECISION, INTENT(INOUT) :: DFDU(NDIM),DFDP(*)\n\n"
         )
         code += "END SUBROUTINE FOPT"
         return code
@@ -395,13 +442,20 @@ class BifurcationProblemSolver:
         code = "SUBROUTINE PVLS(NDIM,U,PAR)\n\n"
         code += self._f_ind + "IMPLICIT NONE\n"
         code += self._f_ind + "INTEGER, INTENT(IN) :: NDIM\n"
-        code += self._f_ind + "DOUBLE PRECISION, INTENT(IN) :: U(NDIM)\n"
-        code += self._f_ind + "DOUBLE PRECISION, INTENT(INOUT) :: PAR(*)\n\n"
+        code += (
+            self._f_ind + "DOUBLE PRECISION, INTENT(IN) :: U(NDIM)\n"
+        )
+        code += (
+            self._f_ind
+            + "DOUBLE PRECISION, INTENT(INOUT) :: PAR(*)\n\n"
+        )
         code += "END SUBROUTINE PVLS"
         return code
 
     def write_func_file(self, basedir="./", silent=False):
-        fname = os.path.join(basedir, self.problem.problem_name + ".f90")
+        fname = os.path.join(
+            basedir, self.problem.problem_name + ".f90"
+        )
         code = self._f_func() + "\n\n"
         code += self._f_stpnt() + "\n\n"
         code += self._f_bcnd() + "\n\n"
@@ -439,23 +493,62 @@ class BifurcationProblemSolver:
         self.problem.solution.read_solution(dirc)
 
     def run_auto(self, dirc):
-        print("Running AUTO on problem " + self.problem.problem_name)
-        print("-" * 72)
+        p_name = self.problem.problem_name
+        print(f"Compiling FORTRAN source for problem {p_name}")
         env = setup_auto_exec_env()
-        command = ["@r", self.problem.problem_name]
-        process = Popen(
-            command,
-            stdout=PIPE,
+        auto_lib_dir = env["LD_LIBRARY_PATH"]
+        compile_cmd = [
+            "gfortran",
+            "-O",
+            "-c",
+            f"{p_name}.f90",
+            "-o",
+            f"{p_name}.o",
+        ]
+        print(" ".join(compile_cmd))
+
+        # ["@r", self.problem.problem_name]
+        compile_cmd = Popen(
+            compile_cmd,
             stderr=PIPE,
+            stdout=PIPE,
             cwd=dirc,
-            bufsize=1,
-            universal_newlines=True,
-            env=env,
         )
-        out, err = process.communicate()
+        out, err = compile_cmd.communicate()
+
+        print(f"Linking...")
+        link_cmd = [
+            "gfortran",
+            f"-L{auto_lib_dir}",
+            "-O",
+            f"{p_name}.o",
+            "-lauto",
+            "-o",
+            f"{p_name}.out",
+        ]
+        print(" ".join(link_cmd))
+
+        link_process = Popen(
+            link_cmd, cwd=dirc, stderr=PIPE, stdout=PIPE, env=env
+        )
+
+        out, err = link_process.communicate()
+        print(f"Running executable {p_name}")
+        parameters = open(os.path.join(dirc,f"c.{p_name}"))
+        run_cmd = [f"./{p_name}.out"]
+        run_process = Popen(
+            run_cmd,
+            cwd=dirc,
+            stderr=PIPE,
+            stdout=PIPE,
+            stdin=parameters,
+            env=env,
+            universal_newlines=True,
+        )
+
+        out, err = run_process.communicate()
         print(out)
         print(err)
-        print("-" * 72)
 
     def delete_last_solution(self):
         shutil.rmtree(self.solution_dir)

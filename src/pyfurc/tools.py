@@ -18,17 +18,19 @@ def setup_auto_exec_env():
     with importlib.resources.path(
         __package__, "__init__.py"
     ) as pkg_path:
-        auto_dir = pkg_path.parents[1].joinpath(
-            "pyfurc.ext", "auto-07p"
+        auto_lib_dir = pkg_path.parents[1].joinpath(
+            "pyfurc.ext", "auto-07p", "lib"
         )
+    
+    env["LD_LIBRARY_PATH"] = str(auto_lib_dir)
 
-    env["AUTO_DIR"] = auto_dir
+    # env["AUTO_DIR"] = auto_dir
 
-    with open(os.path.join(auto_dir, "cmds", "auto.env.sh")) as envf:
-        for line in envf.readlines():
-            if line.startswith("PATH"):
-                extend = line.split("=")[-1].rstrip()
-                extend = extend.replace("$AUTO_DIR", str(auto_dir))
-                newpath = env["PATH"] + f":{extend}"
-                env["PATH"] = newpath
+    # with open(os.path.join(auto_dir, "cmds", "auto.env.sh")) as envf:
+    #     for line in envf.readlines():
+    #         if line.startswith("PATH"):
+    #             extend = line.split("=")[-1].rstrip()
+    #             extend = extend.replace("$AUTO_DIR", str(auto_dir))
+    #             newpath = env["PATH"] + f":{extend}"
+    #             env["PATH"] = newpath
     return env
