@@ -15,7 +15,7 @@ jobs:
       uses: pypa/cibuildwheel@v2.2.0
     - uses: actions/upload-artifact@v2
       with:
-        name: distribution
+        name: wheelhouse
         path: ./wheelhouse/*.whl
 
   build_sdist:
@@ -37,10 +37,10 @@ jobs:
     - name: Upload source package
       uses: actions/upload-artifact@v2
       with:
-        name: distribution
+        name: sdist
         path: dist/
 
-  test_wheel:
+  test_wheel_ubuntu:
     name: Run pytest off wheel installation on ${{ matrix.os }}
     needs: [build_wheels]
     strategy:
@@ -49,9 +49,16 @@ jobs:
         os: [ubuntu-18.04]
     runs-on: ${{ matrix.os }}
     steps:
+    - name: Check out Repository
+      uses: actions/checkout@v2
     - name: Install pytest
       run: pip install pytest
-    - name: Install wheel
+    - name: Download wheel artifact
+      uses: actions/download-artifact@v2
+        with:
+          name: wheelhouse
+          path: wheelhouse
+    - name: Install pyfurc wheel
       run: pip install wheelhouse/*.whl
     - name: Run pytest
       run: pytest test
