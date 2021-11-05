@@ -45,14 +45,17 @@ jobs:
     needs: [build_wheels]
     strategy:
       matrix:
-        python-version: [3.8.2]
         os: [ubuntu-18.04]
     runs-on: ${{ matrix.os }}
     steps:
     - name: Check out Repository
       uses: actions/checkout@v2
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
     - name: Upgrade pip
-      run: pip install --upgrade pip
+      run: 
     - name: Install pytest
       run: pip install pytest
     - name: Download wheel artifact
