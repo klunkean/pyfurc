@@ -51,7 +51,7 @@ in-depth guides in the [Documentation](https://pyfurc.readthedocs.io/en/latest/)
 
 Prerequisites:
 
-* Running Linux distribution
+* Running Linux distribution (only tested on Ubuntu so far)
 * Python 3.8.2+
 * pip
 
@@ -60,13 +60,6 @@ For installing pyfurc run
 ```bash
 pip3 install pyfurc
 ```
-
-If the installation was successful run
-
-```bash
-python3 -m pyfurc --install-auto
-```
-to install and configure AUTO-07p.
 
 # Documentation
 
