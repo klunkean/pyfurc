@@ -11,7 +11,7 @@ testpaths = [
 
 [tool.cibuildwheel]
 archs = ["native"]
-build= ["cp38-*_x86_64"]
+build= ["cp38-manylinux_x86_64"]
 build-verbosity = 1
 build-frontend = "build"
 test-command = "pytest {project}/test"
