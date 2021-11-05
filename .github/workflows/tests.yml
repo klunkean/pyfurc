@@ -55,7 +55,7 @@ jobs:
       with:
         python-version: 3.8
     - name: Upgrade pip
-      run: 
+      run: pip install --upgrade pip
     - name: Install pytest
       run: pip install pytest
     - name: Download wheel artifact
