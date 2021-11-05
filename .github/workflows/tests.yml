@@ -55,9 +55,9 @@ jobs:
       run: pip install pytest
     - name: Download wheel artifact
       uses: actions/download-artifact@v2
-        with:
-          name: wheelhouse
-          path: wheelhouse
+      with:
+        name: wheelhouse
+        path: wheelhouse
     - name: Install pyfurc wheel
       run: pip install wheelhouse/*.whl
     - name: Run pytest
