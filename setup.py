@@ -42,16 +42,30 @@ class custom_install_lib(install_lib):
         # whole ext/auto-07p directory via MANIFEST.in
         auto_lib_dir = os.path.join(self.distribution.bin_dir, "lib")
         auto_lib_file = os.path.join(auto_lib_dir, "libauto.so")
-
         install_auto_dir = os.path.join("pyfurc.ext", "auto-07p")
-        target_dir = os.path.join(
+        # include AUTO license file
+        license_file = os.path.join(
+            self.distribution.bin_dir, "LICENSE"
+        )
+        license_target_dir = os.path.join(
+            self.install_dir, install_auto_dir
+        )
+        os.makedirs(license_target_dir, exist_ok=True)
+        shutil.move(license_file, license_target_dir)
+
+        lib_target_dir = os.path.join(
             self.install_dir, install_auto_dir, "lib"
         )
-        os.makedirs(target_dir, exist_ok=True)
-        shutil.move(auto_lib_file, target_dir)
+        os.makedirs(lib_target_dir, exist_ok=True)
+        shutil.move(auto_lib_file, lib_target_dir)
 
         self.distribution.data_files = [
-            os.path.join(target_dir, os.path.basename(auto_lib_file))
+            os.path.join(
+                lib_target_dir, os.path.basename(auto_lib_file)
+            ),
+            os.path.join(
+                license_target_dir, os.path.basename(license_file)
+            ),
         ]
         self.distribution.run_command("install_data")
 
@@ -62,6 +76,7 @@ auto_ext = Extension(
     "auto-07p.ext",
     sources=[],
 )
+
 
 class custom_build_ext(build_ext):
     """
