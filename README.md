@@ -1,5 +1,8 @@
-![](https://img.shields.io/badge/python-3.8-blue)
-![](https://img.shields.io/github/workflow/status/klunkean/pyfurc/tests)
+![PyPI](https://img.shields.io/pypi/v/pyfurc?style=flat-square)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/klunkean/pyfurc?style=flat-square)
+![GA](https://img.shields.io/github/workflow/status/klunkean/pyfurc/tests?style=flat-square)
+![Read the Docs](https://img.shields.io/readthedocs/pyfurc?style=flat-square)
+![Python Version](https://img.shields.io/badge/python-3.8-blue?style=flat-square)
 # What is pyfurc?
 
 pyfurc is a python module that facilitates calculations for non-linear
