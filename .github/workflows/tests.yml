@@ -1,18 +1,11 @@
 name: tests
 
-on: 
-  push:
-    branches:
-      - master 
+on: [push, pull-request]
 
 jobs:
-  build_wheel:
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version: [3.8.2]
-        os: [ubuntu-18.04]
-    runs-on: ${{ matrix.os }}
+  build_wheels:
+    name: Build wheels
+    runs-on: ubuntu-18.04
     steps:
     - name: Check out Repository
       uses: actions/checkout@v2
@@ -26,6 +19,7 @@ jobs:
         path: ./wheelhouse/*.whl
 
   build_sdist:
+    name: Build sdist
     runs-on: ubuntu-18.04
     steps:
     - name: Check out Repository
@@ -45,3 +39,19 @@ jobs:
       with:
         name: distribution
         path: dist/
+
+  test_wheel:
+    name: Run pytest off wheel installation on ${{ matrix.os }}
+    needs: [build_wheels]
+    strategy:
+      matrix:
+        python-version: [3.8.2]
+        os: [ubuntu-18.04]
+    runs-on: ${{ matrix.os }}
+    steps:
+    - name: Install pytest
+      run: pip install pytest
+    - name: Install wheel
+      run: pip install wheelhouse/*.whl
+    - name: Run pytest
+      run: pytest test
