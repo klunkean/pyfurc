@@ -40,7 +40,7 @@ jobs:
         name: sdist
         path: dist/
 
-  test_wheel_ubuntu:
+  test_wheel:
     name: Run pytest off wheel installation on ${{ matrix.os }}
     needs: [build_wheels]
     strategy:
@@ -51,6 +51,8 @@ jobs:
     steps:
     - name: Check out Repository
       uses: actions/checkout@v2
+    - name: Upgrade pip
+      run: pip install --upgrade pip
     - name: Install pytest
       run: pip install pytest
     - name: Download wheel artifact
