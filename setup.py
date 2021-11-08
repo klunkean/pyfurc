@@ -114,7 +114,6 @@ class custom_build_ext(build_ext):
                 "--enable-gui=no",
                 "--without-openmp",
                 "--without-mpi",
-                f"--build={manylinux_build_tag}",
                 f"--host={target_build_tag}",
             ]
 
