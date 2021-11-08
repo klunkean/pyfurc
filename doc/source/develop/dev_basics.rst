@@ -48,6 +48,9 @@ The source distribution is packed using
 
     python -m build . --sdist
 
+Github actions is also used to publish the built wheel and sdist of
+every tagged commit to the master branch on PyPI.
+
 Documentation
 +++++++++++++
 The `documentation <https://pyfurc.readthedocs.io/>`_ is written in
