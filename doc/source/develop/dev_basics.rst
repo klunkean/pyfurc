@@ -34,7 +34,7 @@ This build process is carried out using
 `cibuildwheel <https://github.com/pypa/cibuildwheel>`_ on a manylinux
 image and automated using github actions. The options for this are set in
 the ``pyproject.toml`` file and the github actions workflow is defined in
-`.github/workflows/tests.yml <https://github.com/klunkean/auto-07p/blob/master/.github/workflows/test.yml>`_.
+``.github/workflows/tests.yml``.
 
 If you want to build the wheel yourself you may run
 
