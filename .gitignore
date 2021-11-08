@@ -345,3 +345,7 @@ testing.ipynb
 bumpversion.sh
 debug.py
 autotest.py
+
+# project specific files/dirs
+pyfurc.ext/
+pyfurc.libs/
