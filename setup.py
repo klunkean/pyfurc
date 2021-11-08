@@ -106,6 +106,21 @@ class custom_build_ext(build_ext):
             env["FFLAGS"] = "-Wall -fPIC"
             manylinux_build_tag = "x86_64-redhat-linux"
             target_build_tag = "x86_64-pc-linux-gnu"
+            clean_cmd = [
+                "make",
+                "superclean"
+            ]
+            clean_process = subprocess.Popen(
+                clean_cmd,
+                cwd=auto_src_dir,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                universal_newlines=True,
+            )
+            with clean_process.stdout as stdout, clean_process.stderr as stderr:
+                self.log_subprocess_output(stdout, debug=True)
+                self.log_subprocess_output(stderr, debug=True)
+
             configure_cmd = [
                 "./configure",
                 "--enable-plaut=no",
