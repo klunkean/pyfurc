@@ -28,7 +28,7 @@ For the installation of pyfurc we need Python and the python package
 manager pip. Python comes shipped with Ubuntu but you may have to install
 pip.
 
-First, open a terminal **in your home directory**. WSL users refer to
+First, open a terminal window. WSL users refer to
 :ref:`accessing the ubuntu subsystem` on how to do this.
 
 It should look similar to this:
@@ -55,8 +55,7 @@ Installing pyfurc with pip
 Installing the pyfurc python package
 ++++++++++++++++++++++++++++++++++++
 
-First, open a terminal **in your home directory** (see above), or use the
-one you may have just used to install pip.
+Open a terminal or use the one you may have just used to install pip.
 
 Enter the following line
 
@@ -64,22 +63,19 @@ Enter the following line
 
     pip3 install pyfurc
 
-and pyfurc will be installed along with all its dependencies.
+and pyfurc will be installed.
 
-Installing AUTO-07p with pyfurc
-+++++++++++++++++++++++++++++++
-
-Once pyfurc is installed we run the provided installation script to
-install AUTO-07p:
+Installing gfortran
++++++++++++++++++++
+The FORTRAN compiler gfortran is needed for pyfurc to run AUTO-07p.
+To install it, type
 
 .. code-block:: bash
 
-    python3 -m pyfurc --install-auto
+    sudo apt install gfortran
 
-This will download and configure AUTO-07p on your machine.
-
-Additional sugestion: jupyter notebook
-++++++++++++++++++++++++++++++++++++++
+Additional suggestion: jupyter notebook
++++++++++++++++++++++++++++++++++++++++
 
 Users without much experience in programming may find it more comfortable to
 program in a `jupyter notebook <https://jupyter.org/>`_.
