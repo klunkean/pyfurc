@@ -1,5 +1,5 @@
-pyfurc Reference
-================
+pyfurc API Reference
+====================
                 This is the reference page for classes and methods in the
                 pyfurc package. It is automatically rendered from
                 docstrings in the source code.
