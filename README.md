@@ -1,7 +1,8 @@
 [![PyPI](https://img.shields.io/pypi/v/pyfurc?style=flat-square)][pypi-url]
 [![GA](https://img.shields.io/github/workflow/status/klunkean/pyfurc/tests?style=flat-square)][ga-url]
-[![Read the Docs](https://img.shields.io/readthedocs/pyfurc?style=flat-square)][rtd-url]
+[![Documentation Status](https://readthedocs.org/projects/pyfurc/badge/?version=latest&style=flat-square)][rtd-url]
 ![Python Version](https://img.shields.io/badge/python-3.8-blue?style=flat-square)
+
 
 [pypi-url]: https://pypi.org/project/pyfurc/
 [rtd-url]: https://pyfurc.readthedocs.io/en/latest/
