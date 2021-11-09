@@ -179,7 +179,6 @@ class BifurcationProblem:
         Name of the bifurcation problem. The calculation output folder
         will contain this name and a timestamp.
 
-
     Variables
     ---------
     :ivar pyfurc.core.Energy energy: The energy expression passed on instantiation.
