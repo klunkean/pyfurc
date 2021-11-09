@@ -11,10 +11,10 @@ Getting Started
     :maxdepth: 2
 
     installation_ubuntu
+    tutorial
 
 Appendix
 ++++++++
 
 .. toctree::
     installation_wsl
-    installation_auto
