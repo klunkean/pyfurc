@@ -37,7 +37,11 @@ extensions = [
     "sphinx.ext.napoleon",
     "sphinx.ext.intersphinx",
     "sphinx.ext.autosectionlabel",
+    "sphinxcontrib.bibtex",
+    "sphinx_lesson.directives",
 ]
+
+bibtex_bibfiles = ["_static/pyfurcbib.bib"]
 
 napoleon_google_docstring = False
 napoleon_use_param = False
