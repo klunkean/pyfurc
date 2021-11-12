@@ -1,12 +1,12 @@
-Pyfurc Tutorial -- The Hinged Cantilever
-++++++++++++++++++++++++++++++++++++++++
+An Introduction to Elastic Stability and pyfurc -- A Tutorial
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 This tutorial first explains some mechanical and mathematical background
-and thereafter the basic usage of pyfurc by solving one of
+and thereafter demonstrates the basic usage of pyfurc by solving one of
 the simplest example problems in elastic stability.
 
-Problem
--------
+Problem: The Hinged Cantilever
+------------------------------
 
 Consider the rigid cantilever with length :math:`\ell` shown below.
 On the top end it is subject to a dead load :math:`P`. On the bottom
@@ -22,7 +22,7 @@ stiffness :math:`c_T`.
 The angle :math:`\varphi` measures the rotation of the cantilever
 with respect to the vertical axis.
 
-Our aim is to find a relationship between the load :math:`P` and
+Our first aim is to find a relationship between the load :math:`P` and
 the cantilever rotation :math:`\varphi`.
 
 1. The Introductory Mechanics Approach
@@ -54,7 +54,8 @@ relation becomes
     \bar P = \frac\varphi{\sin\varphi}\,.
 
 With this expression we have fulfilled our task of finding tuples that
-satisfy the equilibrium condition. These solutions are plotted below:
+satisfy the equilibrium condition. These solutions are also called
+equilibrium paths and are plotted below:
 
 .. figure:: ../_static/img/hinged_eq_plot.svg
     :align: center
@@ -66,16 +67,25 @@ satisfy the equilibrium condition. These solutions are plotted below:
 
 As we can see, for :math:`\bar P>1` we have multiple possible
 solutions for :math:`\varphi`. Graphically we can identify
-:math:`\bar P=1` as a *critical point* or *bifurcation point*.
-This is an example of a *pitchfork bifurcation* which is also
-found in the pyfurc logo.
+:math:`\bar P=1` as a *critical point* or *bifurcation point*. When
+continually loading the system from zero load, the path it takes after
+reaching :math:`\bar P=1` is non-unique. Both paths are mechanically equally
+valid and admissible as they both satisfy the equilibrium condition. In
+reality, small imperfections, e.g. deviations in the angle of the applied
+load, bearing friction, a not perfectly straight cantilever etc. will
+always nudge the system into taking a preferred equilibrium path.
 
 Systems like this, which do not have a unique solution for a given
 input are not easily tackled computationally. Standard algorithms
 may find only one of many solution paths or never converge to a
-solution at all. This is where the FORTRAN program `AUTO-07p` comes
+solution at all. Of course in this simple problem we were able to find
+the solutions analytically but this surely is not the case for most systems.
+
+This is where the FORTRAN program `AUTO-07p` comes
 into play in which sophisticated algorithms that can handle
-non-uniqueness, bifurcations and unstable solutions are implemented.
+non-uniqueness, bifurcations and unstable solutions are implemented and
+allow for numerical solutions of such systems with bifurcations.
+
 Pyfurc facilitates this functionality. But before diving in, let us
 introduce a more systematic approach to elastic systems than
 taking the Newton equilibrium equations.
@@ -221,21 +231,111 @@ If the whole series is zero the equilibrium is called
 **neutrally stable**. Any other case is called an
 **unstable equilibrium**.
 
-If
+If only
 
 .. math::
     \frac{\partial^2 V}{\partial Q^2}\bigg|_{Q=\bar Q}=0
 
 in an equilibrium state :math:`\bar Q` then the energy function
 is locally flat. This implies a change in the system's stability and
-is called **singular** or **bifurcation** point.
+is called **singular**, **critical** or **bifurcation** point.
 
-Let us check the stability for the equilibrium states of our example
-system.
+Now let us check the stability for the equilibrium states of our example
+system. To this end, we start by analyzing the first even order derivative:
+
+.. math::
+    \frac{\partial^2 V}{\partial \varphi^2} = 1-\bar P\cos(\varphi)
+
+Obviously, for :math:`\bar P<1` this expression is positive for arbitrary
+values of :math:`\varphi`.
+Thus, our trivial equilibrium path where :math:`\varphi=0`,
+is stable up to :math:`\bar P = 1` where the second derivative becomes zero.
+For :math:`\bar P > 1` the second derivative is negative and thus,
+the trivial
+equilibrium states are unstable for :math:`\bar P>1`. We marked these
+unstable states
+with a dashed line in the diagram in Fig. 2 whereas solid lines show the
+stable equlibrium states.
+
+Now for the non-trivial equilibrium solutions
+
+.. math::
+    \bar P =\frac{\varphi}{\sin\varphi}\,.
+
+Plugging these into the expression for the second derivative gives
+
+.. math::
+    \frac{\partial^2 V}{\partial Q^2}\bigg|_\mathrm{eq.}=1-\frac{\varphi}{\tan\varphi}
+
+which is always positive for our chosen interval of
+:math:`0\leq|\varphi|\leq\frac\pi2`. All these equilibrium states are thus
+stable.
+
+Take a look at the figure below where the TPE function :math:`V(\varphi, \bar P)`
+is plotted over the normalized angle :math:`\frac{2\varphi}\pi` and the
+normalized load :math:`\bar P = \frac{P\ell}{c_\mathrm{T}}`. It should be
+clear why :math:`V` is sometimes called *energy surface* or *energy landscape*
+
+On this energy surface, the equilibrium states we found earlier are plotted.
+The figure is *interactive*! Hovering over the energy surface will show
+you the function :math:`V(\varphi)` for a fixed value of :math:`\bar P`
+as a dark blue line across the energy surface. On these curves you can clearly see
+the local minima the stable equilibrium paths pass through as well as the
+local maxima the unstable path passes through. You can also observe the
+locally flat surface at the critical point :math:`\bar P = 1`.
+
+Take a little time to play around with the visualization, rotate the graph,
+zoom in and out to identify the observations stated above.
+
 
 .. raw:: html
    :file: ../_static/plotly_graphics/hinged_energy_graph.html
+
 .. Energy surface :math:`V(\varphi, \bar P)` for the Hinged Cantilever
+
+Note that we did not provide a numeric scale for the values of the
+energy function. This is because the absolute value of the TPE has no
+influence on the mechanical behaviour of the system. Recall that it is
+only the derivatives that are relevant for the mechanical response, i.e.
+equilibrium and stability.
+
+Also note that a visualisation like this is only possible for systems with
+exactly one degree of freedom subject to exactly one load.
+Only then a surface can be plotted as a function of the degree of
+freedom and the load parameter.
+
+3. Numerical Solution with pyfurc
+=================================
+
+Let us recap what we had to do to find the equilibrium states of
+our example system using the TPE method:
+
+1. Identify/define the degrees of freedom,
+2. formulate the TPE expression
+3. and take its first derivatives w.r.t. all degrees of freedom to obtain
+   the equilibrium equations.
+4. Find all states that satisfy the equilibrium equations.
+
+Pyfurc takes over after step 2. Based on a provided expression for the TPE
+pyfurc determines the equilbrium equations and solves them via AUTO-07p.
+
+For this example system we could obtain
+the solutions analytically and finding the equilibrium equations was a
+trivial task. But for more complicated systems, obtaining analytical
+solutions may be impossible and determining the equilibrium equations may
+become tedious.
+
+If you have already installed pyfurc you can just follow along and
+try everything out yourself, preferrably in a jupyter notebook. Go to
+:ref:`this page<Installing pyfurc on Ubuntu>` for installation
+instructions.
+
+We have already gone through steps 1 and 2 above: Our only degree of
+freedom is :math:`\varphi` and our TPE reads
+
+.. math::
+    V(\varphi, P) = \frac12 c_\mathrm{T}\varphi^2-P\ell(1-\cos\varphi)\,.
+
 
 Literature
 ==========
