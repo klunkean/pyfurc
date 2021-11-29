@@ -325,9 +325,9 @@ trivial task. But for more complicated systems, obtaining analytical
 solutions may be impossible and determining the equilibrium equations may
 become tedious.
 
-If you have already installed pyfurc you can just follow along and
-try everything out yourself, preferrably in a jupyter notebook. Go to
-:ref:`this page<Installing pyfurc on Ubuntu>` for installation
+If you already have installed pyfurc you can just follow along and
+try everything out yourself, preferrably in a jupyter notebook. Otherwise go
+to :ref:`this page<Installing pyfurc on Ubuntu>` for installation
 instructions.
 
 We have already gone through steps 1 and 2 above: Our only degree of
@@ -337,6 +337,18 @@ freedom is :math:`\varphi` and our TPE reads
     V(\varphi, P) = \frac12 c_\mathrm{T}\varphi^2-P\ell(1-\cos\varphi)\,.
 
 
+The first thing we do is import pyfurc and sympy. The latter is a symbolic
+math package for python and enables us to define the TPE as
+a symbolic expression.
+
+.. jupyter-execute::
+
+    import pyfurc as pf
+    import sympy as sp
+
+The derivatives of such an expression can then be
+determined symbolically to find the equilibrium equations without
+introducing numerical errors.
 Literature
 ==========
 
