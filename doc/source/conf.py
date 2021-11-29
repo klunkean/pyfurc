@@ -39,6 +39,7 @@ extensions = [
     "sphinx.ext.autosectionlabel",
     "sphinxcontrib.bibtex",
     "sphinx_lesson.directives",
+    "jupyter_sphinx",
 ]
 
 bibtex_bibfiles = ["_static/pyfurcbib.bib"]
