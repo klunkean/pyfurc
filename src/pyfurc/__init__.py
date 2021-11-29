@@ -8,7 +8,9 @@ from pyfurc.core import (
     BifurcationProblem,
     BifurcationProblemSolution,
     BifurcationProblemSolver,
+    Dof,
     Energy,
+    Load,
     PhysicalQuantity,
 )
 from pyfurc.tools import setup_auto_exec_env

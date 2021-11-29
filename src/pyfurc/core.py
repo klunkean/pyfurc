@@ -19,8 +19,10 @@ from pyfurc.util import (
 
 
 class PhysicalQuantity(Symbol):
-    # TODO: Rewrite with classes Dof, Load, Constant
-    """Fundamental class for degrees of freedom and loads.
+    """Fundamental class for degrees of freedom, loads and parameters.
+
+    Using the shortcut classes `pyfurc.Dof`, `pyfurc.Load` and `pyfurc.Parameter`
+    is recommended.
 
     Parameters
     ----------
@@ -34,17 +36,9 @@ class PhysicalQuantity(Symbol):
         Initial value if `quantity_type` is `load` or `dof`.
         Value if `quantity_type` is `parameter`.
         Default is 0.0.
-
-    Example
-    -------
-    Define a degree of freedom with an initial value of 1.0 and a display name "\\\\varphi":
-
-        .. code-block:: python
-
-            phi = PhysicalQuantity("\\\\varphi", quantity_type="dof", value=1.0)
     """
 
-    def __new__(cls, name, quantity_type="parameter", value=0.0):
+    def __new__(cls, name, quantity_type, value=0.0):
         obj = super().__new__(cls, name)
         possible_quantity_types = ["load", "dof", "parameter"]
         if quantity_type.lower() not in possible_quantity_types:
@@ -54,6 +48,68 @@ class PhysicalQuantity(Symbol):
         obj._name = None
         obj.quantity_type = quantity_type.lower()
         obj.value = value
+        return obj
+
+
+class Dof(PhysicalQuantity):
+    """Class used for defining degrees of freedom. Shortcut for
+    ``PhysicalQuantity(name, quantity_type="dof")``
+
+    Parameters
+    ----------
+    name : str
+        The name that will be displayed in outputs. When working
+        in a jupyter notebook, LaTeX symbols can be displayed, e.g.
+        ``\\varphi``.
+    value : float, optional
+        Initial value of the degree of freedom.
+        Default is 0.0.
+
+    Example
+    -------
+    Define a degree of freedom with an initial value of 1.0 and a display name "\\\\varphi":
+
+        .. code-block:: python
+
+            phi = Dof("\\\\varphi", value=1.0)
+    """
+
+    def __new__(cls, name, value=0.0):
+        obj = super().__new__(cls, name, "dof", value=value)
+        return obj
+
+
+class Load(PhysicalQuantity):
+    """Class used for defining degrees of freedom. Shortcut for
+    ``PhysicalQuantity(name, quantity_type="load")``
+
+    Parameters
+    ----------
+    name : str
+        The name that will be displayed in outputs. When working
+        in a jupyter notebook, LaTeX symbols can be displayed, e.g.
+        ``\\varphi``.
+    value : float, optional
+        Initial value of the load.
+        Default is 0.0.
+
+    Example
+    -------
+    Define a Load with display name "P":
+
+        .. code-block:: python
+
+            phi = Load("P")
+    """
+
+    def __new__(cls, name, value=0.0):
+        obj = super().__new__(cls, name, "load", value=value)
+        return obj
+
+
+class Parameter(PhysicalQuantity):
+    def __new__(cls, name, value=0.0):
+        obj = super().__new__(cls, name, "parameter", value=value)
         return obj
 
 
@@ -74,7 +130,7 @@ class Energy(spexpr):
         self.nparams = 0
         load_defined = 0
         for atom in expr.atoms():
-            if type(atom) is PhysicalQuantity:
+            if isinstance(atom, (Dof, Load, Parameter)):
                 if atom.quantity_type == "dof":
                     self.ndofs += 1
                     name = f"U({self.ndofs:d})"
