@@ -1,5 +1,5 @@
 __author__ = "ak"
-__version__ = "0.1.7"
+__version__ = "0.2.0"
 import configparser
 import os
 import warnings
