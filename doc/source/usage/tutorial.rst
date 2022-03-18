@@ -113,7 +113,7 @@ Thus the TPE takes the following general form:
 
 |
 
- .. exercise:: Before you continue...
+ .. note:: Before you continue...
 
     What is the only degree of freedom in our example system?
 
@@ -325,10 +325,11 @@ trivial task. But for more complicated systems, obtaining analytical
 solutions may be impossible and determining the equilibrium equations may
 become tedious.
 
-If you already have installed pyfurc you can just follow along and
-try everything out yourself, preferrably in a jupyter notebook. Otherwise go
-to :ref:`this page<Installing pyfurc on Ubuntu>` for installation
-instructions.
+.. note::
+    If you already have installed pyfurc you can just follow along and
+    try everything out yourself, preferrably in a jupyter notebook. Otherwise go
+    to :ref:`this page<Installing pyfurc on Ubuntu>` for installation
+    instructions.
 
 We have already gone through steps 1 and 2 above: Our only degree of
 freedom is :math:`\varphi` and our TPE reads
@@ -336,19 +337,141 @@ freedom is :math:`\varphi` and our TPE reads
 .. math::
     V(\varphi, P) = \frac12 c_\mathrm{T}\varphi^2-P\ell(1-\cos\varphi)\,.
 
-
 The first thing we do is import pyfurc and sympy. The latter is a symbolic
 math package for python and enables us to define the TPE as
 a symbolic expression.
 
-.. jupyter-execute::
+.. code-block:: python
 
     import pyfurc as pf
     import sympy as sp
 
-The derivatives of such an expression can then be
-determined symbolically to find the equilibrium equations without
-introducing numerical errors.
+We can now define the degree of freedom :math:`\varphi` as ``pf.Dof``,
+the load :math:`P` as ``pf.Load`` as well as the constants :math:`c_T`
+and :math:`\ell` as simple floating point numbers.
+
+.. code-block:: python
+
+    phi = pf.Dof("\\varphi")
+    P = pf.Load("P")
+    c_T = 1
+    ell = 1
+
+The only argument we have to supply inside the brackets
+is the name the variable has for display purposes.
+Since the backslash is reserved as a special character in python strings we
+have to escape it using another backslash. The strings we supplied can be
+rendered using LaTeX, which is why we called our dof ``\\varphi``.
+
+If you are inside a jupyter notebook you can run ``display(phi)`` and
+it should output a rendered phi.
+
+With the above quantities defined we can define the energy expression using
+
+.. code-block:: python
+
+    V = pf.Energy(1/2*c_T*phi**2 - P*ell*(1-sp.cos(phi)))
+
+Note that we use the ``cos`` function supplied by ``sympy`` which we imported
+above as ``sp``. The only argument for :class:`pf.Energy <pyfurc.core.Energy>`
+is the expression.
+
+Recall that when solving the problem manually we would now determine the
+equilibrium equations by calculating the first derivatives.
+In pyfurc we instead define a :class:`pf.BifurcationProblem <pyfurc.core.BifurcationProblem>`
+as follows:
+
+.. code-block:: python
+
+    bf = pf.BifurcationProblem(V, name="hinged_cantilever")
+
+The first (mandatory) argument here is the energy expression ``V``.
+The second argument is an optional keyword argument that is used to
+name output files.
+
+The ``pf.BifurcationProblem`` object holds parameters and settings for
+the calculation. One important parameter is called ``RL1`` (by AUTO-07p)
+which is the maximum load up to which the calculation is carried out.
+For our choice of constants, setting this to ``2.0`` is sensible
+(can you give a reason why this is the case?):
+
+.. code-block:: python
+
+    bf.set_parameter("RL1", 2.0)
+
+The rest of the parameters inside the ``pf.BifurcationProblem``
+is kept at default values which can be found :class:`here<pyfurc.util.AutoParameters>`.
+
+The last step is to define and run the solver:
+
+.. code-block:: python
+
+    solver = pf.BifurcationProblemSolver(bf)
+    solver.solve()
+
+If ``solver.solve()`` has run successfully, you will get a console output
+by AUTO-07p which has been called in the background. More importantly,
+our ``BifurcationProblem`` now holds the solutions as a list of
+:class:`pandas DataFrames<pandas:pandas.DataFrame>` inside
+``bf.solution.raw_data``. Each list item corresponds to a single equilibrium
+branch.
+
+We can create a very rudimentary plot with the following lines:
+
+.. code-block:: python
+
+    import matplotlib.pyplot as plt
+    for branch in bf.solution.raw_data:
+        plt.plot(branch["U(1)"], branch["PAR(1)"])
+
+In the lines above we iterate over the DataFrames in ``bf.solution.raw_data``
+and plot their
+respective ``U(1)`` (i.e. the first DOF in AUTO-07p nomenclature) and
+``PAR(1)`` (i.e. the first load parameter in AUTO-07p nomenclature)
+columns using `matplotlib <https://matplotlib.org/>`_. The resulting plot
+should look more or less like this:
+
+.. figure:: ../_static/img/hinged_bifurcationdiagram.png
+    :width: 350
+    :align: center
+
+    Fig. 3: Rudimentary Bifurcation Plot
+
+If you prefer to work with the actual raw data output by AUTO-07p, a
+directory with the name of the ``BifurcationProblem`` and a timestamp
+should have been created inside the directory where you have run your
+python script. In this case, the directory is called ``hinged_cantilever_YYYYMMDD_HHMMSS``
+and you can find the generated FORTRAN code ``hinged_cantilever.f90``
+and its compiled executable, the output files ``fort.7``, ``fort.8``
+and ``fort.9`` as well as the constants file ``c.hinged_cantilever``
+inside.
+
+The complete code for the above example looks as follows:
+
+.. code-block:: python
+
+    import pyfurc as pf
+    import sympy as sp
+    import matplotlib.pyplot as plt
+
+    phi = pf.Dof("\\varphi")
+    P = pf.Load("P")
+    c_T = 1
+    ell = 1
+
+    V = pf.Energy(1/2*c_T*phi**2 - P*ell*(1-sp.cos(phi)))
+    bf = pf.BifurcationProblem(V, name="hinged_cantilever")
+    bf.set_parameter("RL1", 2.0)
+
+    solver = pf.BifurcationProblemSolver(bf)
+    solver.solve()
+
+    for branch in bf.solution.raw_data:
+        plt.plot(branch["U(1)"], branch["PAR(1)"])
+
+Congratulations! You have successfully solved your first bifurcation
+problem with pyfurc!
+
 Literature
 ==========
 

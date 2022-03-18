@@ -38,8 +38,8 @@ extensions = [
     "sphinx.ext.intersphinx",
     "sphinx.ext.autosectionlabel",
     "sphinxcontrib.bibtex",
-    "sphinx_lesson.directives",
-    "jupyter_sphinx",
+    # "sphinx_lesson.directives",
+    # "jupyter_sphinx"
 ]
 
 bibtex_bibfiles = ["_static/pyfurcbib.bib"]
@@ -50,6 +50,7 @@ napoleon_use_ivar = True
 
 intersphinx_mapping = {
     "sympy": ("https://docs.sympy.org/latest/", None),
+    "pandas": ("https://pandas.pydata.org/docs/", None),
 }
 
 # Add any paths that contain templates here, relative to this directory.
