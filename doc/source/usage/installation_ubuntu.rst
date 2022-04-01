@@ -45,6 +45,14 @@ Now just enter
 
 and hit return to install pip.
 
+If you get an error you may need to update the package sources by typing
+
+.. code-block:: bash
+
+    sudo apt update
+
+After this, try installing pip again.
+
 
 Now that the package manager pip is installed, we can use it to install
 pyfurc.
