@@ -51,8 +51,10 @@ for dat in bf.solution.raw_data:
     plt.plot(dat["U(1)"], dat["PAR(1)"])
 ```
 
-To get started, check out the Quickstart section below or check the
-in-depth guides in the [Documentation](https://pyfurc.readthedocs.io/en/latest/).
+To get started, check out the Quickstart section below or take a look at the
+in-depth installation guides in the [Documentation](https://pyfurc.readthedocs.io/en/latest/).
+
+Part of the documentation is an [in-depth tutorial](https://pyfurc.readthedocs.io/en/latest/usage/tutorial.html) where a simple example problem is solved in different ways.
 
 # Quickstart
 
@@ -71,8 +73,6 @@ pip3 install pyfurc
 # Documentation and Tutorial
 
 The [Documentation](https://pyfurc.readthedocs.io/en/latest/) is hosted on readthedocs.
-
-Part of the documentation is an [in-depth tutorial](https://pyfurc.readthedocs.io/en/latest/usage/tutorial.html) where a simple example problem is solved in different ways.
 
 
 
