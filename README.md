@@ -68,9 +68,11 @@ For installing pyfurc run
 pip3 install pyfurc
 ```
 
-# Documentation
+# Documentation and Tutorial
 
 The [Documentation](https://pyfurc.readthedocs.io/en/latest/) is hosted on readthedocs.
+
+Part of the documentation is an [in-depth tutorial](https://pyfurc.readthedocs.io/en/latest/usage/tutorial.html) where a simple example problem is solved in different ways.
 
 
 
