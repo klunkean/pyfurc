@@ -35,8 +35,9 @@ import pyfurc as pf
 import sympy as sp
 import matplotlib.pyplot as plt
 
-phi = pf.PhysicalQuantity("\\varphi", quantity_type="DOF")
-P = pf.PhysicalQuantity("P", quantity_type="load")
+phi = pf.Dof("\\varphi")
+P = pf.Load("P")
+
 cT = 10/3.1415
 ell = 0.5
 
