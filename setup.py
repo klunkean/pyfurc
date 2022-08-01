@@ -1,15 +1,15 @@
+import os
+import shutil
 import subprocess
+from distutils import log as distutils_logger
+from distutils.command.install_data import install_data
+from glob import glob
 
 from setuptools import setup
 from setuptools.command.build_ext import build_ext
-from setuptools.extension import Extension
 from setuptools.command.install_lib import install_lib
-from distutils.command.install_data import install_data
-from distutils import log as distutils_logger
+from setuptools.extension import Extension
 from wheel.bdist_wheel import bdist_wheel
-import os
-import shutil
-from glob import glob
 
 
 class custom_bdist_wheel(bdist_wheel):
@@ -44,28 +44,18 @@ class custom_install_lib(install_lib):
         auto_lib_file = os.path.join(auto_lib_dir, "libauto.so")
         install_auto_dir = os.path.join("pyfurc.ext", "auto-07p")
         # include AUTO license file
-        license_file = os.path.join(
-            self.distribution.bin_dir, "LICENSE"
-        )
-        license_target_dir = os.path.join(
-            self.install_dir, install_auto_dir
-        )
+        license_file = os.path.join(self.distribution.bin_dir, "LICENSE")
+        license_target_dir = os.path.join(self.install_dir, install_auto_dir)
         os.makedirs(license_target_dir, exist_ok=True)
         shutil.move(license_file, license_target_dir)
 
-        lib_target_dir = os.path.join(
-            self.install_dir, install_auto_dir, "lib"
-        )
+        lib_target_dir = os.path.join(self.install_dir, install_auto_dir, "lib")
         os.makedirs(lib_target_dir, exist_ok=True)
         shutil.move(auto_lib_file, lib_target_dir)
 
         self.distribution.data_files = [
-            os.path.join(
-                lib_target_dir, os.path.basename(auto_lib_file)
-            ),
-            os.path.join(
-                license_target_dir, os.path.basename(license_file)
-            ),
+            os.path.join(lib_target_dir, os.path.basename(auto_lib_file)),
+            os.path.join(license_target_dir, os.path.basename(license_file)),
         ]
         self.distribution.run_command("install_data")
 
@@ -106,10 +96,7 @@ class custom_build_ext(build_ext):
             env["FFLAGS"] = "-Wall -fPIC"
             manylinux_build_tag = "x86_64-redhat-linux"
             target_build_tag = "x86_64-pc-linux-gnu"
-            clean_cmd = [
-                "make",
-                "superclean"
-            ]
+            clean_cmd = ["make", "superclean"]
             clean_process = subprocess.Popen(
                 clean_cmd,
                 cwd=auto_src_dir,
