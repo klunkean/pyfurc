@@ -11,6 +11,7 @@ from pyfurc.core import (
     Dof,
     Energy,
     Load,
+    Parameter,
     PhysicalQuantity,
 )
 from pyfurc.tools import setup_auto_exec_env
