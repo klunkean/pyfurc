@@ -130,7 +130,7 @@ class Energy(spexpr):
         self.nparams = 0
         load_defined = 0
         for atom in expr.atoms():
-            if isinstance(atom, (Dof, Load, Parameter)):
+            if isinstance(atom, (Dof, Load, Parameter, PhysicalQuantity)):
                 if atom.quantity_type == "dof":
                     self.ndofs += 1
                     name = f"U({self.ndofs:d})"
