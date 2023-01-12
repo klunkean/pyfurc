@@ -38,8 +38,8 @@ class PhysicalQuantity(Symbol):
         Default is 0.0.
     """
 
-    def __new__(cls, name, quantity_type, value=0.0):
-        obj = super().__new__(cls, name)
+    def __new__(cls, name, quantity_type, value=0.0, positive=None):
+        obj = super().__new__(cls, name, positive=positive)
         possible_quantity_types = ["load", "dof", "parameter"]
         if quantity_type.lower() not in possible_quantity_types:
             raise ValueError(
@@ -74,8 +74,8 @@ class Dof(PhysicalQuantity):
             phi = Dof("\\\\varphi", value=1.0)
     """
 
-    def __new__(cls, name, value=0.0):
-        obj = super().__new__(cls, name, "dof", value=value)
+    def __new__(cls, name, value=0.0, positive=None):
+        obj = super().__new__(cls, name, "dof", value=value, positive=positive)
         return obj
 
 
@@ -102,14 +102,14 @@ class Load(PhysicalQuantity):
             phi = Load("P")
     """
 
-    def __new__(cls, name, value=0.0):
-        obj = super().__new__(cls, name, "load", value=value)
+    def __new__(cls, name, value=0.0, positive=None):
+        obj = super().__new__(cls, name, "load", value=value, positive=positive)
         return obj
 
 
 class Parameter(PhysicalQuantity):
-    def __new__(cls, name, value=0.0):
-        obj = super().__new__(cls, name, "parameter", value=value)
+    def __new__(cls, name, value=0.0, positive=None):
+        obj = super().__new__(cls, name, "parameter", value=value, positive=positive)
         return obj
 
 
