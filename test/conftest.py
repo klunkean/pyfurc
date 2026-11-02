@@ -11,7 +11,7 @@ def symmetric_bifurcation_problem():
     P = pf.Load("P")
 
     # first bifurcation point will be at exactly P = 1, phi = 0
-    V = pf.Energy(1 / 2 * phi ** 2 - P * (1 - sp.cos(phi)))
+    V = pf.Energy(1 / 2 * phi**2 - P * (1 - sp.cos(phi)))
 
     bf = pf.BifurcationProblem(V, name="hinged_cantilever")
     # Set maximum load to double the critical load
